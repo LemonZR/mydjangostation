@@ -1,0 +1,43 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hello {{ name }}</title>
+    <!--    <style type='text/css'>
+            body {color: slategrey;background: lavender}
+            #submit {color: red;background: lightblue;b}
+
+        </style>
+    -->
+</head>
+<body>
+<h1> Yo,Hello! </h1>
+</body>
+<div>
+    <h2>The detail of Questions</h2>
+    <input type="button" class="blue_btn" value="返回列表" onclick="javascript:window.location.href='/polls/'"/>
+
+
+    <div>
+        <h2> {{ question.id }}.{{ question.question_text }} </h2>
+        <th>
+            {% for choice in choices %}
+
+                <td>当前投票：{{ choice.choice_text }}:</td>
+                <td>{{ choice.votes }}</td>
+
+
+                <form style="display: inline" method="post" action="/polls/{{ question.id }}/vote/">
+                    <input type="hidden" name="choice_id" value="{{ choice.id }}">
+                    <input value="vote" type="submit" id="submit"
+                           onclick="alert('Thanks for voting {{ question.id }}-{{ choice.id }}')"/>
+                </form>
+
+
+                <br/>
+            {% endfor %}
+        </th>
+    </div>
+
+
+</div>
+</html>

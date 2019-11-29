@@ -1,0 +1,42 @@
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>hello {{ name }}</title>
+        <script type="text/javascript" src="/media/js/jquery-3.4.1.js"></script>
+        <link rel="styleSheet" href="/media/css/audio.css" type="text/css">
+    <script src="/media/js/audio.js"></script>
+</head>
+<body>
+<h1> Yo,Hello! </h1>
+</body>
+<form action="hello/" method="post">
+    <input type="submit" value="I'm from index">
+
+</form>
+<p> This is a audiossss </p>
+
+<div>
+<div class="btn-audio">
+    <audio   id="mp3Btn" autoplay="autoplay"  >
+    <source src="/media/audio/Hanser-gwm.mp3">
+    <source src="/media/audio/VORACITY.flac">
+
+</audio>
+</div>
+</div>
+
+
+<p>Questions List</p>
+<div>
+    <ul>
+        {% for question in latest_question_list %}
+
+            <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+
+
+
+        {% endfor %}
+    </ul>
+</div>
+
+</html>
