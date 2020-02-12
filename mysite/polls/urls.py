@@ -1,10 +1,9 @@
-
 from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='hello'),
+    path('', views.index, name='index'),
     path('hello/', views.hello, name='hello'),
     path('touch/', views.touch, name='touch'),
     # ex: /polls/5/
@@ -13,5 +12,7 @@ urlpatterns = [
     path('<int:question_id>/results/', views.results, name='results'),
     # ex: /polls/5/vote/
     path('<int:question_id>/vote/', views.vote, name='vote'),
+    path('login/', views.login, name='login'),
+    path('checklogin/', views.checklogin, name='checklogin')
 
 ]

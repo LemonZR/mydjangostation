@@ -1,0 +1,32 @@
+{% load static from staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hello
+        {% if name  %}
+    name
+        {% else  %}
+        man
+        {% endif %}
+
+    </title>
+    <script type="text/javascript" src="{% static '/js/jquery-3.4.1.js' %}"></script>
+    <link rel="styleSheet" href="{% static '/css/login.css' %}" type="text/css">
+
+</head>
+<body>
+<h1> Yo,Hello! </h1>
+</body>
+<form   action="/polls/checklogin/" method="post">
+    <div>
+        <label for="user_name">Your name: </label>
+        <input id="user_name" type="text" name="user" placeholder="用户名">
+    </div>
+    <div>
+        <label for="user_name">Your password: </label>
+        <input type="text" name='passwd' id="passwd">
+        <input type="submit" value="login">
+    </div>
+</form>
+
+</html>

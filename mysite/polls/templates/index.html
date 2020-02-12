@@ -1,10 +1,11 @@
-<html lang="en" >
+{% load static from staticfiles %}
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>hello {{ name }}</title>
-        <script type="text/javascript" src="/media/js/jquery-3.4.1.js"></script>
-        <link rel="styleSheet" href="/media/css/audio.css" type="text/css">
-    <script src="/media/js/audio.js"></script>
+    <title>hello {{ name}}</title>
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
+    <link rel="styleSheet" href="{% static 'css/audio.css' %}" type="text/css">
+    <script src="{%  static 'js/audio.js'%}"></script>
 </head>
 <body>
 <h1> Yo,Hello! </h1>
@@ -16,27 +17,31 @@
 <p> This is a audiossss </p>
 
 <div>
-<div class="btn-audio">
-    <audio   id="mp3Btn" autoplay="autoplay"  >
-    <source src="/media/audio/Hanser-gwm.mp3">
-    <source src="/media/audio/VORACITY.flac">
+    <div class="btn-audio">
+        <audio id="mp3Btn" autoplay="autoplay">
+            <source src="{%  static 'audio/Hanser-gwm.mp3' %}">
+            <source src="{% static 'audio/VORACITY.flac'%}">
 
-</audio>
-</div>
+        </audio>
+    </div>
 </div>
 
 
 <p>Questions List</p>
 <div>
-    <ul>
-        {% for question in latest_question_list %}
+    {% if latest_question_list %}
+
+        <ul>
+            {% for question in latest_question_list %}
 
             <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
 
+            {% endfor %}
+        </ul>
 
-
-        {% endfor %}
-    </ul>
+    {% else %}
+    <p>There is no polls </p>
+    {% endif %}
 </div>
 
 </html>

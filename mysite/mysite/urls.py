@@ -20,11 +20,12 @@ from django.urls import include
 
 from django.conf.urls.static import static
 
-from .settings import MEDIA_ROOT, MEDIA_URL
+#from .settings import MEDIA_ROOT, MEDIA_URL
 
 from django.urls import re_path
 import re
 from django.views.static import serve
+from .views import index
 
 # urlpatterns = [
 #     path('polls/', include('polls.urls')),
@@ -33,25 +34,25 @@ from django.views.static import serve
 #
 # ]
 urlpatterns = [
-    path('polls/', include('polls.urls')),
-    path('admin/', admin.site.urls),
+                  path('', index),
+                  path('polls/', include('polls.urls')),
+                  path('admin/', admin.site.urls),
 
-] + static(MEDIA_URL, document_root=MEDIA_ROOT)
+              ] # + static(MEDIA_URL, document_root=MEDIA_ROOT)
 
-
-# def static(prefix, view=serve, **kwargs):
+# def my_static(prefix, view=serve, **kwargs):
 #     """
 #     Return a URL pattern for serving files in debug mode.
 #
 #     from django.conf import settings
-#     from django.conf.urls.static import static
+#     from django.conf.urls.my_static import my_static
 #
 #     urlpatterns = [
 #         # ... the rest of your URLconf goes here ...
-#     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#     ] + my_static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #     """
 #     if not prefix:
-#         raise ImproperlyConfigured("Empty static prefix not permitted")
+#         raise ImproperlyConfigured("Empty my_static prefix not permitted")
 #     elif not settings.DEBUG or urlsplit(prefix).netloc:
 #         # No-op if not in debug mode or a non-local prefix.
 #         return []

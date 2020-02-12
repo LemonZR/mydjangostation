@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>hello {{name}}</title>
+    <title>hello {{name }}</title>
 </head>
 <body>
 <h1> Yo,Hello! </h1>
+    <input type="button" class="blue_btn" value="返回列表" onclick="javascript:window.location.href='/polls/'"/>
+
 </body>
 <form action="/polls/touch/" method="post">
 <input type="submit" value="Touch Me">
+
 </form>
 </html>
