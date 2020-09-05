@@ -1,11 +1,15 @@
-{% load static from staticfiles %}
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>hello {{ name}}</title>
+    <title>hello {{ name }}</title>
     <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
     <link rel="styleSheet" href="{% static 'css/audio.css' %}" type="text/css">
+    <link rel="styleSheet" href="{% static 'css/index.css' %}" type="text/css">
     <script src="{%  static 'js/audio.js'%}"></script>
+    <!--{% load static %} -->
+    <link rel="shortcut icon" href="{% static 'images/bilibili.ico' %}" type="image/x-icon">
+
 </head>
 <body>
 <h1> Yo,Hello! </h1>
@@ -15,7 +19,7 @@
 
 </form>
 <p> This is a audiossss </p>
-
+<P>
 <div>
     <div class="btn-audio">
         <audio id="mp3Btn" autoplay="autoplay">
@@ -25,9 +29,10 @@
         </audio>
     </div>
 </div>
-
+</P>
 
 <p>Questions List</p>
+<p>
 <div>
     {% if latest_question_list %}
 
@@ -43,5 +48,5 @@
     <p>There is no polls </p>
     {% endif %}
 </div>
-
+</p>
 </html>

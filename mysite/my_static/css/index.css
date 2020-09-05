@@ -1,0 +1,12 @@
+p {
+    background-color: grey;
+    clear: both;
+}
+div {
+    background-color: #ffefed;
+    float: left;
+    margin: 0 auto;
+}
+body {
+    background-color: #333333;
+}

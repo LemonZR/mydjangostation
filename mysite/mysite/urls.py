@@ -20,7 +20,7 @@ from django.urls import include
 
 from django.conf.urls.static import static
 
-#from .settings import MEDIA_ROOT, MEDIA_URL
+# from .settings import MEDIA_ROOT, MEDIA_URL
 
 from django.urls import re_path
 import re
@@ -34,11 +34,11 @@ from .views import index
 #
 # ]
 urlpatterns = [
-                  path('', index),
-                  path('polls/', include('polls.urls')),
-                  path('admin/', admin.site.urls),
+    path('', index),
+    path('polls/', include('polls.urls')),
+    path('admin/', admin.site.urls),
 
-              ] # + static(MEDIA_URL, document_root=MEDIA_ROOT)
+]  # + static(MEDIA_URL, document_root=MEDIA_ROOT)
 
 # def my_static(prefix, view=serve, **kwargs):
 #     """

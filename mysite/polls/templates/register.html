@@ -19,15 +19,15 @@
 <body>
 <h1> Yo,Hello! </h1>
 </body>
-<form   action="/polls/login/" method="post">{% csrf_token %}
+<form   action="/polls/register/" method="post">
     <div>
         <label for="user_name">Your name: </label>
         <input id="user_name" type="text" name="user" placeholder="用户名">
     </div>
     <div>
         <label for="user_name">Your password: </label>
-        <input type="text" name='passwd' id="passwd">
-        <input type="submit" value="login">
+        <input type="text" name='passwd' id="passwd" placeholder="any words">
+        <input type="submit" value="register">
     </div>
 </form>
 

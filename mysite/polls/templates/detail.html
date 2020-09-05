@@ -1,14 +1,15 @@
-{% load static from staticfiles %}
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>hello {{ name  }}</title>
+    <title>hello {{ name }}</title>
     <!--    <style type='text/css'>
             body {color: slategrey;background: lavender}
             #submit {color: red;background: lightblue;b}
 
         </style>
     -->
+    <link rel="shortcut icon" href="{% static 'images/bilibili.ico' %}" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="{% static '/css/sweetalert.css' %}">
     <script type="text/javascript" src="{% static '/js/sweetalert.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static '/css/alert_box.css' %}">
@@ -16,8 +17,23 @@
 </head>
 <body>
 <h1> Yo,Hello! </h1>
+
+<script type="text/javascript">
+
+    {% if isVoted %}
+        {% if Duplicate_Submission %}
+            swal('You have voted for {{ question.id }}-{{ voted_choice_id }}')
+        {% elif isSuccessful %}
+            swal('Thanks for voting {{ question.id }}-{{ voted_choice_id }}')
+        {% else %}
+            swal('You failed to vote. Please try again later:{{ voted_question.id }}-{{ voted_choice.id }}')
+        {% endif %}
+
+    {% endif %}
+
+</script>
 </body>
-<div>
+<div id="question_detail">
     <h2>The detail of Questions</h2>
     <input type="button" class="blue_btn" value="返回列表" onclick="javascript:window.location.href='/polls/'"/>
     <div>
@@ -29,10 +45,11 @@
                 <td>{{ choice.votes }}</td>
 
 
-                <form style="display: inline" method="post" action="/polls/{{ question.id }}/vote/">
+                <form style="display: inline" method="post" action="/polls/{{ question.id }}/">
+                    {% csrf_token %}
                     <input type="hidden" name="choice_id" value="{{ choice.id }}">
-                    <input value="vote" type="submit" id="submit" onclick="swal('投票成功','Thanks for voting {{ question.id }}-{{ choice.id }}')"    >
-                           <!--onclick="alert('Thanks for voting {{ question.id }}-{{ choice.id }}')"/>-->
+                    <input value="vote" type="submit" id="submits">
+
 
                 </form>
 
