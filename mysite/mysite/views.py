@@ -1,4 +1,3 @@
-from django.shortcuts import render, render_to_response, redirect, reverse, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 
 
@@ -7,3 +6,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 def index(request):
     return HttpResponse('Hello ')
+
+
+def favicon(request):
+    path = r"my_static/images/bilibili.ico"
+    file_one = open(path, "rb")
+    return HttpResponse(file_one.read(), content_type='image/jpg')

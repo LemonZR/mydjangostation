@@ -25,7 +25,7 @@ from django.conf.urls.static import static
 from django.urls import re_path
 import re
 from django.views.static import serve
-from .views import index
+from .views import index,favicon
 
 # urlpatterns = [
 #     path('polls/', include('polls.urls')),
@@ -34,6 +34,7 @@ from .views import index
 #
 # ]
 urlpatterns = [
+    path('favicon.ico',favicon),
     path('', index),
     path('polls/', include('polls.urls')),
     path('admin/', admin.site.urls),

@@ -1,13 +1,10 @@
-from django.shortcuts import render, render_to_response, redirect, reverse, get_object_or_404
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 # render_to_response（）已弃用，取而代之的是render（）
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import User, Question, Choice
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
-
-
 # 与 from django.views.generic.base import View 同一个View
-
 
 # Create your views here.
 
@@ -94,9 +91,7 @@ class Detail(View):
         return render(request, "detail.html", {'next': next, 'question': question, 'choices': choices})
 
     def post(self, request, question_id):
-
         isSuccessful = False
-
         choice_id = request.POST.get('choice_id', None)
         question = get_object_or_404(Question, pk=question_id)
         choices = Choice.objects.filter(question_id=question_id)
