@@ -8,8 +8,8 @@ urlpatterns = [
     path('hello/', views.hello, name='hello'),
     path('touch/', views.touch, name='touch'),
     path('logout/', views.logout, name='logout'),
-    # ex: /polls/5/
     path('info/', views.user_info, name='info'),
+    # ex: /polls/5/
     path('<int:question_id>/', views.Detail.as_view(), name='detail'),
     # ex: /polls/5/results/
     path('<int:question_id>/results/', views.results, name='results'),

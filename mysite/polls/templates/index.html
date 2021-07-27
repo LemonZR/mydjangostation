@@ -6,21 +6,38 @@
     <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
     <link rel="styleSheet" href="{% static 'css/audio.css' %}" type="text/css">
     <link rel="styleSheet" href="{% static 'css/index.css' %}" type="text/css">
-    <script src="{%  static 'js/audio.js'%}" ></script>
+    <script src="{%  static 'js/audio.js'%}"></script>
     <!--{% load static %} -->
 
 </head>
+
 <body>
+<style type="text/css">
+    #rt{
+    width:px;
+    height:30px;
+    position:absolute;
+    top:0px;
+    right:0px;
+    }
+
+</style>
 <h1> Yo,Hello! </h1>
 </body>
 <form action="hello/" method="post">
     <input type="submit" value="I'm from index">
 
 </form>
-<form action="logout/" method="post">
-    <input type="submit" value="登出">
+<div id="rt">
+    <span>{{ name}}</span>
+    <span>
+        <form action="logout/" method="post">
+        <input type="submit" value="登出">
+    </form>
+    </span>
 
-</form>
+</div>
+
 <p> This is a audiossss </p>
 <P>
 <div>
@@ -40,13 +57,13 @@
 <div>
     {% if latest_question_list %}
 
-        <ul>
-            {% for question in latest_question_list %}
+    <ul>
+        {% for question in latest_question_list %}
 
-            <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+        <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
 
-            {% endfor %}
-        </ul>
+        {% endfor %}
+    </ul>
 
     {% else %}
     <p>There is no polls </p>
