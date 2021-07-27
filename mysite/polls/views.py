@@ -32,7 +32,9 @@ class Login(View):
         if user is not None and passwd == u_passwd:
             request.session.set_expiry(300)
             request.session['user'] = user
+            request.session['passwd'] = passwd
             return HttpResponseRedirect(reverse('index'))
+            # return render(request, 'index.html', {'name': request.session.get('user')})
         else:
             return HttpResponseRedirect(reverse('login'))
 
