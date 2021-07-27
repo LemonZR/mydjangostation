@@ -17,11 +17,16 @@
     <input type="submit" value="I'm from index">
 
 </form>
+<form action="logout/" method="post">
+    <input type="submit" value="登出">
+
+</form>
 <p> This is a audiossss </p>
 <P>
 <div>
     <div class="btn-audio">
-        <audio id="mp3Btn" autoplay="autoplay">
+        <!--<audio id="mp3Btn" autoplay="autoplay">-->
+        <audio id="mp3Btn">
             <source src="{%  static 'audio/Hanser-gwm.mp3' %}">
             <source src="{% static 'audio/VORACITY.flac'%}">
 

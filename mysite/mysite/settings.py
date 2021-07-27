@@ -28,8 +28,8 @@ SECRET_KEY = '%lf1&v^^^f_&*sr=y=i$f20g+gc6t_21(3lln)f%4#=0^d83y@'
 # 默认是 DEBUG = True
 
 DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1", ]
-
+# ALLOWED_HOSTS = ["127.0.0.1", ]
+ALLOWED_HOSTS = ["*", ]
 # Application definition
 
 INSTALLED_APPS = [
@@ -83,8 +83,8 @@ DATABASES = {
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mysite',
-        'USER': 'root',
-        'PASSWORD': 'zrshi250',
+        'USER': 'app',
+        'PASSWORD': 'appshi250',
         'PORT': '3306',
         'HOST': 'localhost'
     }
