@@ -19,17 +19,23 @@ class Login(View):
         return render(request, 'login.html')
 
     def post(self, request):
-        user = request.POST.get('user', None)
+        user_name = request.POST.get('user', None)
         passwd = request.POST.get('passwd', None)
+        try:
+            user = User.objects.get(name=user_name)
+            u_passwd = user.passwd
+        except Exception as e:
+            user = None
+            u_passwd = None
         print('POST user:%s' % user)
-        if user == 'zr' and passwd == '123':
+
+        if user is not None and passwd == u_passwd:
             request.session.set_expiry(300)
             request.session['user'] = user
-            request.session['passwd'] = passwd
             return HttpResponseRedirect(reverse('index'))
-            # return render(request, 'index.html', {'name': request.session.get('user')})
         else:
             return HttpResponseRedirect(reverse('login'))
+
 
 @csrf_exempt
 def logout(request):
