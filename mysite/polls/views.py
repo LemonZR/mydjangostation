@@ -31,7 +31,7 @@ class Login(View):
 
         if user is not None and passwd == u_passwd:
             request.session.set_expiry(300)
-            request.session['user'] = user
+            request.session['user'] = user_name
             request.session['passwd'] = passwd
             return HttpResponseRedirect(reverse('index'))
             # return render(request, 'index.html', {'name': request.session.get('user')})
@@ -73,52 +73,23 @@ def index(request):
         return HttpResponseRedirect(reverse('login'))
 
 
-# @csrf_exempt
-# 用detail 类视图取代
-# def vote(request, question_id):
-#
-#     isSuccessful = False
-#     if request.method == 'POST':
-#         print("I'm question_id %s" % question_id)
-#
-#         choice_id = request.POST.get('choice_id', None)
-#         question = get_object_or_404(Question, pk=question_id)
-#         choices = Choice.objects.filter(question_id=question_id)
-#         print("I'm choice_id %s" % choice_id)
-#         try:
-#             choice = Choice.objects.get(id=choice_id, question_id=question_id)
-#             print(choice)
-#             choice.votes = choice.votes + 1
-#             choice.save()
-#             isSuccessful = True
-#         except Exception as e:
-#             print(e)
-#     kw = {'question': question, 'choices': choices, 'voted_choice_id': choice_id, 'isVoted': True,
-#           'isSuccessful': isSuccessful}
-#
-#     return render(request, 'detail.html', kw)
-#     # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
 class Detail(View):
-    def is_login(self, request):
-        user = request.session.get('user', None)
-        return bool(user)
 
     def get(self, request, question_id):
-        has_login = self.is_login(request)
+        user = request.session.get('user', None)
+        has_login = bool(user)
         # question = Question.objects.get(pk=question_id)
         question = get_object_or_404(Question, pk=question_id)
         choices = Choice.objects.filter(question_id=question_id)
         return render(request, "detail.html",
-                      {'has_login': has_login, 'next': next, 'question': question, 'choices': choices})
+                      {'has_login': has_login, 'next': next, 'question': question, 'choices': choices, 'name': user})
 
     def post(self, request, question_id):
-        has_login = self.is_login(request)
+        user = request.session.get('user', None)
+        has_login = bool(user)
         if not has_login:
             return HttpResponseRedirect(reverse('login'))
-        else:
-            user = request.session.get('user')
+
         isSuccessful = False
         choice_id = request.POST.get('choice_id', None)
         question = get_object_or_404(Question, pk=question_id)
@@ -127,13 +98,14 @@ class Detail(View):
 
         # 投票的id，session中使用，判断是否重复投票
         voted_id = '%s-%s' % (question_id, user)
-        voted_choice_id = request.session.get('voted_choice_id', choice_id)
+        voted_choice = request.session.get(voted_id,choice_id)
+        print(voted_choice +'asdasdasd')
         # 页面需要的信息
-        kw = {'question': question, 'choices': choices, 'voted_choice_id': voted_choice_id, 'isVoted': True,
-              'isSuccessful': isSuccessful, 'Duplicate_Submission': False}
+        kw = {'question': question, 'choices': choices, 'voted_choice': voted_choice, 'isVoted': True,
+              'isSuccessful': isSuccessful, 'Duplicate_Submission': False, 'user': user}
 
-        if not request.session.get(voted_id, False):
-            request.session['voted_choice_id'] = voted_choice_id
+        if not request.session.get(voted_id, None):
+            request.session[voted_id] = voted_choice
         else:
             kw.update({'Duplicate_Submission': True})
             return render(request, 'detail.html', kw)
@@ -147,7 +119,6 @@ class Detail(View):
             print(e)
         kw.update({'isSuccessful': isSuccessful})
 
-        request.session[voted_id] = isSuccessful
         return render(request, 'detail.html', kw)
 
 

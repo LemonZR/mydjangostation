@@ -22,11 +22,11 @@
 
     {% if isVoted %}
         {% if Duplicate_Submission %}
-            swal('You have voted for {{ question.id }}-{{ voted_choice_id }}')
+            swal('You have voted for {{ question.id }}-{{ voted_choice }}')
         {% elif isSuccessful %}
-            swal('Thanks for voting {{ question.id }}-{{ voted_choice_id }}')
+            swal('Thanks for voting {{ question.id }}-{{ voted_choice }}')
         {% else %}
-            swal('You failed to vote. Please try again later:{{ voted_question.id }}-{{ voted_choice.id }}')
+            swal('You failed to vote. Please try again later:{{ voted_question.id }}-{{ voted_choice }}')
         {% endif %}
 
     {% endif %}
