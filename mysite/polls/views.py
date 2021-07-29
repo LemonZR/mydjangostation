@@ -13,7 +13,7 @@ from django.views import View
 
 class Login(View):
     def get(self, request):
-        user = request.POST.get('user', None)
+        user = request.session.get('user', None)
         if user:
             return HttpResponseRedirect(reverse('index'))
         return render(request, 'login.html')
@@ -30,7 +30,7 @@ class Login(View):
         print('POST user:%s' % user)
 
         if user is not None and passwd == u_passwd:
-            request.session.set_expiry(300)
+            request.session.set_expiry(0)
             request.session['user'] = user_name
             request.session['passwd'] = passwd
             return HttpResponseRedirect(reverse('index'))
@@ -41,7 +41,7 @@ class Login(View):
 
 @csrf_exempt
 def logout(request):
-    request.session.set_expiry(0)
+    request.session.flush()
     return HttpResponseRedirect(reverse('login'))
 
 
@@ -98,8 +98,8 @@ class Detail(View):
 
         # 投票的id，session中使用，判断是否重复投票
         voted_id = '%s-%s' % (question_id, user)
-        voted_choice = request.session.get(voted_id,choice_id)
-        print(voted_choice +'asdasdasd')
+        voted_choice = request.session.get(voted_id, choice_id)
+        print(voted_choice + 'asdasdasd')
         # 页面需要的信息
         kw = {'question': question, 'choices': choices, 'voted_choice': voted_choice, 'isVoted': True,
               'isSuccessful': isSuccessful, 'Duplicate_Submission': False, 'user': user}
@@ -140,3 +140,30 @@ def user_info(request):
 
 def results(request, question_id):
     return HttpResponse("You're looking at the results of the question %s." % question_id)
+
+
+class Register(View):
+
+    def get(self, request):
+        return render(request, 'register.html')
+
+    def post(self, request):
+        user_name = request.POST.get('user_name')
+        passwd = request.POST.get('passwd')
+
+        duplicate_user_name = bool(User.objects.filter(name=user_name))
+        if len(passwd) < 3 or len(passwd) > 16:
+            just_failed = True
+        else:
+            just_failed = False
+
+        failed = duplicate_user_name or just_failed
+        if not failed:
+            request.session['user'] = user_name
+            print(user_name)
+            new_user = User(name=user_name, passwd=passwd, age=0)
+            new_user.save()
+            return HttpResponseRedirect(reverse('login'))
+        else:
+            return render(request, 'register.html',
+                          {'failed': failed, 'duplicate_user_name': duplicate_user_name, 'just_failed': just_failed})

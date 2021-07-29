@@ -6,23 +6,36 @@
         {% if name  %}
     name
         {% else  %}
-        man
+        human
         {% endif %}
 
     </title>
     <script type="text/javascript" src="{% static '/js/jquery-3.4.1.js' %}"></script>
     <link rel="styleSheet" href="{% static '/css/login.css' %}" type="text/css">
-    <!--{% load static %} -->
+    <script type="text/javascript" src="{% static '/js/sweetalert.js' %}"></script>
     <link rel="shortcut icon" href="{% static 'images/bilibili.ico' %}" type="image/x-icon">
-
+    <link rel="stylesheet" type="text/css" href="{% static '/css/sweetalert.css' %}">
+    <script type="text/javascript" src="{% static '/js/sweetalert.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/alert_box.css' %}">
+    <script type="text/javascript" src="{% static '/js/my_alert.js' %}"></script>
 </head>
 <body>
+<script type="text/javascript">
+    {% if failed %}
+        {% if duplicate_user_name %}
+            swal('用户名已被使用')
+        {% elif just_failed %}
+            swal('用户名或密码不符合规则')
+        {% endif %}
+    {% endif %}
+</script>
 <h1> Yo,Hello! </h1>
 </body>
 <form   action="/polls/register/" method="post">
+    {% csrf_token %}
     <div>
         <label for="user_name">Your name: </label>
-        <input id="user_name" type="text" name="user" placeholder="用户名">
+        <input id="user_name" type="text" name="user_name" placeholder="用户名">
     </div>
     <div>
         <label for="user_name">Your password: </label>

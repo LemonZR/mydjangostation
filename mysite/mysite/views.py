@@ -5,7 +5,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 
 def index(request):
-    return HttpResponse('Hello ')
+    # return HttpResponse('Hello ')
+    return HttpResponseRedirect('polls/')
 
 
 def favicon(request):
