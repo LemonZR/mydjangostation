@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import User, Question, Choice
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
+from pyecharts import charts
 
 
 # 与 from django.views.generic.base import View 同一个View
@@ -30,7 +31,7 @@ class Login(View):
         print('POST user:%s' % user)
 
         if user is not None and passwd == u_passwd:
-            request.session.set_expiry(0)
+            request.session.set_expiry(600)
             request.session['user'] = user_name
             request.session['passwd'] = passwd
             return HttpResponseRedirect(reverse('index'))
@@ -134,6 +135,9 @@ def user_info(request):
               "INFO": "User info",
               "IP": ip_addr,
               "UA": user_ua}
+    value = request.META.items()
+    k = request.META.keys()
+    print(k)
 
     return HttpResponse(json.dumps(result), content_type="application/json")
 
@@ -145,6 +149,7 @@ def results(request, question_id):
 class Register(View):
 
     def get(self, request):
+
         return render(request, 'register.html')
 
     def post(self, request):
@@ -167,3 +172,23 @@ class Register(View):
         else:
             return render(request, 'register.html',
                           {'failed': failed, 'duplicate_user_name': duplicate_user_name, 'just_failed': just_failed})
+
+
+class Drawing(View):
+    def get(self, request):
+        latest_question_list = Question.objects.order_by('-pub_date')[:5]
+        output = ', '.join([q.question_text for q in latest_question_list])
+        return render(request,'drawing.html',{'latest_question_list': latest_question_list, 'questions': output})
+
+    def post(self, request):
+        question_id = request.POST.get('question_id')
+        question = get_object_or_404(Question, pk=question_id)
+        choices = Choice.objects.filter(question_id=question_id)
+
+        choice_list = []
+        for choice in choices:
+            choice_list.append((choice.choice_text, choice.votes))
+
+        pie = charts.Pie()
+        pie.add(question.question_text, choice_list)
+        return pie.render()

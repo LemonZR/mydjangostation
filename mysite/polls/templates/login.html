@@ -28,7 +28,30 @@
         <label for="user_name">Your password: </label>
         <input type="text" name='passwd' id="passwd" placeholder="Your password:">
         <input type="submit" value="login">
+		<input type="button" id="register" value="注册账号"/>
     </div>
 </form>
+<div id="inner_register"></div>
+<script type="text/javascript">
+        	$('#register').click(function () {
 
+		        $.ajax({
+				  url:  '/polls/register',
+				  type: 'get',
+				  async: false,
+				  data: null,
+				  processData: false,// 告诉jQuery不要去处理发送的数据
+				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
+				  beforeSend: function () {//过程...
+				      console.log('正在进行，请稍候')
+				  },
+				  success: function (res) {
+                            $("#inner_register").html(res);
+				   },
+				   error:function(){
+				   		console.log('404')
+				   }
+				})
+			})
+</script>
 </html>

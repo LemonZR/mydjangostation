@@ -1,0 +1,74 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hello {{ name }}</title>
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
+    <link rel="styleSheet" href="{% static 'css/audio.css' %}" type="text/css">
+    <link rel="styleSheet" href="{% static 'css/index.css' %}" type="text/css">
+    <script src="{%  static 'js/audio.js'%}"></script>
+
+
+</head>
+<script type="text/javascript">
+        	$('.question').click(function () {
+                var question_id = $('.question').value
+                var to_url = '/polls/drawing/'
+                alter(question_id)
+		        $.ajax({
+				  url:  to_url,
+				  type: 'post',
+				  async: false,
+				  data: {'question_id':question_id},
+				  processData: false,// 告诉jQuery不要去处理发送的数据
+				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
+				  beforeSend: function () {//过程...
+				      console.log('正在进行，请稍候')
+				  },
+				  success: function (res) {
+                            $("#drawing").html(res);
+				   },
+				   error:function(){
+				   		console.log('404')
+				   }
+				})
+			})
+
+</script>
+<body>
+
+<h1> Yo,Hello! </h1>
+</body>
+
+<div id="rt">
+    <span>{{ name}}</span>
+    <span>
+        <form action="logout/" method="post">
+        <input type="submit" value="登出">
+    </form>
+    </span>
+
+</div>
+
+
+<p>
+<H1>Questions List</H1></p>
+
+
+<div>
+    {% if latest_question_list %}
+
+    <ul>
+        {% for question in latest_question_list %}
+
+        <li  >{{ question.question_text }} <button class="question" value="{{ question.id }}"></button> </li>
+
+        {% endfor %}
+    </ul>
+
+    {% else %}
+    <p>There is no polls </p>
+    {% endif %}
+</div>
+<div id="drawing"></div>
+</html>
