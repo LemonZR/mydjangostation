@@ -12,32 +12,33 @@
 </head>
 
 <body>
-<!--<style type="text/css">
-    #rt{
+<style type="text/css">
+    .rt{
     width:auto;
-    height:auto;
+    height:0;
     position:absolute;
-    top:0px;
-    right:0px;
+    top:20px;
+    right:10px;
     }
 
-</style> -->
+</style>
 <h1> Yo,Hello! </h1>
 </body>
 <form action="hello/" method="post">
     <input type="submit" value="I'm from index">
 
 </form>
-<div id="rt">
-    <span>{{ name}}</span>
+<p>
+<div class="rt">
+
     <span>
         <form action="logout/" method="post">
-        <input type="submit" value="登出">
+        <input type="submit" value="{{name}}:登出" align="right">
     </form>
     </span>
 
 </div>
-
+</p>
 <H1> This is a audio :</H1>
 <div>
     <div class="btn-audio">

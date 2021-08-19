@@ -1,3 +1,6 @@
+import os
+import sys
+
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 # render_to_response（）已弃用，取而代之的是render（）
 from django.http import HttpResponse, HttpResponseRedirect
@@ -174,21 +177,33 @@ class Register(View):
                           {'failed': failed, 'duplicate_user_name': duplicate_user_name, 'just_failed': just_failed})
 
 
-class Drawing(View):
-    def get(self, request):
-        latest_question_list = Question.objects.order_by('-pub_date')[:5]
-        output = ', '.join([q.question_text for q in latest_question_list])
-        return render(request,'drawing.html',{'latest_question_list': latest_question_list, 'questions': output})
+def beforeDrawing(request):
+    user = request.session.get('user', None)
 
-    def post(self, request):
-        question_id = request.POST.get('question_id')
+    if user:
+        latest_question_list = Question.objects.order_by('-pub_date')[:5]
+        return render(request, "drawing.html",
+                      {'latest_question_list': latest_question_list, 'name': user})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+class Drawing(View):
+
+    def get(self, request, question_id):
+
         question = get_object_or_404(Question, pk=question_id)
         choices = Choice.objects.filter(question_id=question_id)
-
+        print(question_id)
         choice_list = []
         for choice in choices:
             choice_list.append((choice.choice_text, choice.votes))
 
-        pie = charts.Pie()
-        pie.add(question.question_text, choice_list)
-        return pie.render()
+        pie_path = 'polls/render/%s_charts.html' % question_id
+        if not os.path.exists(pie_path):
+            pie = charts.Pie()
+            pie.add(question.question_text, choice_list)
+            pie.render(pie_path)
+
+        chart = open(pie_path).read()
+        return HttpResponse(chart)
