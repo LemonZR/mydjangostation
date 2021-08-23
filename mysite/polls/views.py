@@ -9,7 +9,7 @@ from .models import User, Question, Choice
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 from pyecharts import charts
-from .authenticated import is_authenticated
+from .authenticated import is_authenticated, class_method_authenticated
 
 
 # 与 from django.views.generic.base import View 同一个View
@@ -191,21 +191,18 @@ class Register(View):
                           {'failed': failed, 'duplicate_user_name': duplicate_user_name, 'just_failed': just_failed})
 
 
+@is_authenticated
 def beforeDrawing(request):
     user = request.session.get('user', None)
-
-    if user:
-        latest_question_list = Question.objects.order_by('-pub_date')[:5]
-        return render(request, "drawing.html",
-                      {'latest_question_list': latest_question_list, 'name': user})
-    else:
-        return HttpResponseRedirect(reverse('login'))
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    return render(request, "drawing.html",
+                  {'latest_question_list': latest_question_list, 'name': user})
 
 
 class Drawing(View):
-
+    @class_method_authenticated
     def get(self, request, question_id):
-
+        print(request.session.get('HTTP_REFERER'))
         question = get_object_or_404(Question, pk=question_id)
         choices = Choice.objects.filter(question_id=question_id)
         print(question_id)
