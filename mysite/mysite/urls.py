@@ -17,15 +17,14 @@ from django.contrib import admin
 from django.urls import path
 
 from django.urls import include
-
 from django.conf.urls.static import static
 
-# from .settings import MEDIA_ROOT, MEDIA_URL
+from .settings import MEDIA_ROOT, MEDIA_URL, STATIC_ROOT, STATIC_URL
 
 from django.urls import re_path
 import re
 from django.views.static import serve
-from .views import index,favicon
+from .views import index, favicon, error_404, error_500
 
 # urlpatterns = [
 #     path('polls/', include('polls.urls')),
@@ -34,12 +33,14 @@ from .views import index,favicon
 #
 # ]
 urlpatterns = [
-    path('favicon.ico',favicon),
-    path('', index),
-    path('polls/', include('polls.urls')),
-    path('admin/', admin.site.urls),
+                  path('favicon.ico', favicon),
+                  path('', index),
+                  path('polls/', include('polls.urls')),
+                  path('admin/', admin.site.urls),
+                  re_path(r'^%s(?P<path>.*)$' % re.escape(STATIC_URL.lstrip('/')), serve,
+                          {'document_root': STATIC_ROOT})
 
-]  # + static(MEDIA_URL, document_root=MEDIA_ROOT)
+              ]
 
 # def my_static(prefix, view=serve, **kwargs):
 #     """
@@ -60,3 +61,5 @@ urlpatterns = [
 #     return [
 #         re_path(r'^%s(?P<path>.*)$' % re.escape(prefix.lstrip('/')), view, kwargs=kwargs),
 #     ]
+handler404 = error_404
+handler500 = error_500

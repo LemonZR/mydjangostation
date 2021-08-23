@@ -15,9 +15,9 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# MEDIA_DIR = os.path.join(BASE_DIR, 'my_static/')  # added by ZhangRui
-# MEDIA_ROOT = MEDIA_DIR  # added by ZhangRui
-# MEDIA_URL = '/my_static/'  # added by ZhangRui
+MEDIA_DIR = os.path.join(BASE_DIR, 'my_static').replace('\\', '/')  # added by ZhangRui
+MEDIA_ROOT = MEDIA_DIR  # added by ZhangRui
+MEDIA_URL = '/media/'  # added by ZhangRui
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -28,9 +28,9 @@ SECRET_KEY = '%lf1&v^^^f_&*sr=y=i$f20g+gc6t_21(3lln)f%4#=0^d83y@'
 # SECURITY WARNING: don't run with debug turned on in production!
 # 默认是 DEBUG = True
 
-DEBUG = True
+DEBUG = True  # False 状态下需要配置STATIC_ROOT
 # ALLOWED_HOSTS = ["127.0.0.1", ]
-ALLOWED_HOSTS = ["*", ]
+ALLOWED_HOSTS = ["*", "192.168.2.7"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -59,7 +59,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'my_static/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,8 +127,9 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'my_static')
+    os.path.join(BASE_DIR, 'my_static')  # 开发模式使用
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')  # 部署的时候，nginx等会把项目的静态文件都放到这里
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

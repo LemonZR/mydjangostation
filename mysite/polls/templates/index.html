@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=10"/>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <title>hello {{ name }}</title>
     <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
     <link rel="styleSheet" href="{% static 'css/audio.css' %}" type="text/css">
@@ -28,6 +32,7 @@
     <input type="submit" value="I'm from index">
 
 </form>
+<input type="button" class="blue_btn" value="查看图吧" onclick="javascript:window.location.href='/polls/drawing'"/>
 <p>
 <div class="rt">
 

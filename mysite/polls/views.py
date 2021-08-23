@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 # render_to_response（）已弃用，取而代之的是render（）
@@ -8,6 +9,7 @@ from .models import User, Question, Choice
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 from pyecharts import charts
+from .authenticated import is_authenticated
 
 
 # 与 from django.views.generic.base import View 同一个View
@@ -18,13 +20,19 @@ from pyecharts import charts
 class Login(View):
     def get(self, request):
         user = request.session.get('user', None)
+        referer = request.session.get('HTTP_REFERER', '')
+
         if user:
-            return HttpResponseRedirect(reverse('index'))
+            if referer:
+                return HttpResponseRedirect(referer)
+            else:
+                return HttpResponseRedirect(reverse('index'))
         return render(request, 'login.html')
 
     def post(self, request):
         user_name = request.POST.get('user', None)
         passwd = request.POST.get('passwd', None)
+        referer = request.session.get('HTTP_REFERER', '')
         try:
             user = User.objects.get(name=user_name)
             u_passwd = user.passwd
@@ -37,7 +45,11 @@ class Login(View):
             request.session.set_expiry(600)
             request.session['user'] = user_name
             request.session['passwd'] = passwd
-            return HttpResponseRedirect(reverse('index'))
+            if referer:
+                request.session['HTTP_REFERER'] = ''
+                return HttpResponseRedirect(referer)
+            else:
+                return HttpResponseRedirect(reverse('index'))
             # return render(request, 'index.html', {'name': request.session.get('user')})
         else:
             return HttpResponseRedirect(reverse('login'))
@@ -50,6 +62,7 @@ def logout(request):
 
 
 @csrf_exempt
+@is_authenticated
 def hello(request):
     if request.method == 'POST':
         return HttpResponseRedirect('/polls/hello/')
@@ -129,6 +142,7 @@ class Detail(View):
 import json
 
 
+@is_authenticated
 def user_info(request):
     # print ".........",request.META
     ip_addr = request.META['REMOTE_ADDR']
@@ -202,8 +216,17 @@ class Drawing(View):
         pie_path = 'polls/render/%s_charts.html' % question_id
         if not os.path.exists(pie_path):
             pie = charts.Pie()
-            pie.add(question.question_text, choice_list)
+            pie.add(question.question_text, choice_list, )
             pie.render(pie_path)
+        else:
+            pie_mod_time = os.path.getmtime(pie_path)
+            print(pie_mod_time)
+            print(time.time())
+            print(time.time() - pie_mod_time)
+            if time.time() - pie_mod_time >= 60:
+                pie = charts.Pie()
+                pie.add(question.question_text, choice_list, )
+                pie.render(pie_path)
 
         chart = open(pie_path).read()
         return HttpResponse(chart)

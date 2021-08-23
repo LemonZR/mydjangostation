@@ -7,19 +7,31 @@
     <link rel="styleSheet" href="{% static 'css/audio.css' %}" type="text/css">
     <link rel="styleSheet" href="{% static 'css/index.css' %}" type="text/css">
     <script src="{%  static 'js/audio.js'%}"></script>
+    <style type="text/css">
+    .rt{
+    width:auto;
+    height:0;
+    position:absolute;
+    top:20px;
+    right:10px;
+    }
+    .question:hover{color:red}
 
+
+
+    </style>
 
 </head>
 
 <body>
 <h1> Yo,Hello! </h1>
+<input type="button" class="blue_btn" value="返回列表" onclick="javascript:window.location.href='/polls/'"/>
 
+<div class="rt">
 
-<div id="rt">
-    <span>{{ name}}</span>
     <span>
         <form action="/polls/logout/" method="post">
-        <input type="submit" value="登出">
+        <input type="submit" value="{{ name}}登出">
     </form>
     </span>
 
@@ -32,22 +44,24 @@
 
 <div>
 
-        {% if latest_question_list %}
-        {% csrf_token %}
-        <ul>
-            {% for question in latest_question_list %}
+    {% if latest_question_list %}
+    {% csrf_token %}
+    <ul>
+        {% for question in latest_question_list %}
 
-            <li>{{ question.question_text }} <input type="button" class="question" value="{{ question.id }}"></li>
+        <li class="question" value="{{ question.id}}" style="cursor:hand">{{ question.question_text }} </li>
 
-            {% endfor %}
-        </ul>
+        {% endfor %}
+    </ul>
 
-        {% else %}
-        <p>There is no polls </p>
-        {% endif %}
+    {% else %}
+    <p>There is no polls </p>
+    {% endif %}
 
 </div>
-<p><div id="drawing"></div></p>
+<p>
+<div id="drawing"></div>
+</p>
 <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
 <script type="text/javascript">
         	$('.question').click(function () {
@@ -73,6 +87,7 @@
 				   }
 				})
 			})
+
 
 
 
