@@ -1,0 +1,165 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=10"/>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <title>hello {{ name }}</title>
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
+    <script src="{%  static 'js/audio.js'%}"></script>
+    <!--{% load static %} -->
+
+</head>
+
+<body>
+
+<style type="text/css">
+    .rt{
+    width:auto;
+    height:0;
+    position:absolute;
+    top:20px;
+    right:10px;
+    }
+
+    #showing{
+    width:auto;
+    height:auto;
+    position:absolute;
+    left:20px;
+    bottom:auto;
+    }
+    .table_name:hover{color:blue}
+
+    #drawing{
+    width:auto;
+    height:auto;
+    position:absolute;
+    left:auto;
+    bottom:10px;
+    right:10px
+    }
+
+
+
+</style>
+<h1> Yo,Hello! </h1>
+
+
+<input type="button" class="blue_btn" value="查看图吧" onclick="javascript:window.location.href='/mycharts/tabledata'"/>
+<p>
+<div class="rt">
+
+    <span>
+        <form action="logout/" method="post">
+        <input type="submit" value="{{name}}:登出" align="right">
+    </form>
+    </span>
+
+</div>
+</p>
+
+<p>
+<H1>Table List</H1>
+</p>
+<input type="text" id="find_str" placeholder="查询的表名"><input type="button" value="查询" id="search">
+<div id="showing">
+    <form>
+        {% csrf_token %}
+
+        <ul>
+            {% for table in tables %}
+            <li class="table_name" style="cursor:hand" value="1"> {{ table.table_name }}</li>
+
+            {% endfor %}
+
+        </ul>
+
+    </form>
+</div>
+
+<script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+<script type="text/javascript">
+
+        	    $('#search').click(function () {
+        	    this_button = $(this)
+                this_button.attr("disabled",true);
+                var csrf =$("input[name='csrfmiddlewaretoken']").val()
+                var find_str =$('#find_str').val()
+		        $.ajax({
+				  url:  '/mycharts/search/',
+				  type: 'POST',
+				  async: false,
+				  traditional:true,
+				  headers:{'X-CSRFtoken':csrf},
+				  data: JSON.stringify({'find_str':find_str}),
+				  processData: false,// 告诉jQuery不要去处理发送的数据
+				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
+				  beforeSend: function() {//过程...
+
+				  },
+				  complete : function ()
+				  {
+
+				  },
+				  success: function (res) {
+
+                          $("#showing").html(res);
+
+				   },
+				   error:function(){
+				   		console.log('404')
+				   }
+				})
+
+			   setTimeout(function(){
+                this_button.attr("disabled",false);
+                }, 1000);
+
+			})
+;
+
+        	    $('.table_name').click(function () {
+        	    this_button = $(this)
+                this_button.attr("disabled",true);
+                var csrf =$("input[name='csrfmiddlewaretoken']").val()
+                var table_name =this_button.text()
+
+		        $.ajax({
+				  url:  '/mycharts/drawtable/',
+				  type: 'POST',
+				  async: false,
+				  traditional:true,
+				  headers:{'X-CSRFtoken':csrf},
+				  data: JSON.stringify({'table_name':table_name}),
+				  processData: false,// 告诉jQuery不要去处理发送的数据
+				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
+				  beforeSend: function() {//过程...
+
+				  },
+				  complete : function ()
+				  {
+
+				  },
+				  success: function (res) {
+
+                          $("#drawing").html(res);
+
+				   },
+				   error:function(){
+				   		console.log('404')
+				   }
+				})
+
+			   setTimeout(function(){
+                this_button.attr("disabled",false);
+                }, 1000);
+
+			})
+
+</script>
+<div id="drawing"></div>
+</body>
+</html>

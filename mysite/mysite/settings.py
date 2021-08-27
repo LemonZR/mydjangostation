@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'polls.apps.PollsConfig',
+    'mycharts.apps.MychartsConfig'
 
 ]
 
@@ -139,17 +140,11 @@ LOGGING = {
             'class': 'logging.StreamHandler',
         },
     },
-    # 'loggers': {
-    #     'django.db.backends': {
-    #         'handlers': ['console'],
-    #         'propagate': True,
-    #         'level': 'DEBUG',
-    #     },
     'loggers': {
         'django.db.backends': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': 'DEBUG',
         },
 
     }

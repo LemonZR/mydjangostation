@@ -9,7 +9,10 @@ from .models import User, Question, Choice
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 from pyecharts import charts
+
 from .authenticated import is_authenticated, class_method_authenticated
+
+import json
 
 
 # 与 from django.views.generic.base import View 同一个View
@@ -27,7 +30,7 @@ class Login(View):
                 return HttpResponseRedirect(referer)
             else:
                 return HttpResponseRedirect(reverse('index'))
-        return render(request, 'login.html')
+        return render(request, 'polls/login.html')
 
     def post(self, request):
         user_name = request.POST.get('user', None)
@@ -66,14 +69,14 @@ def logout(request):
 def hello(request):
     if request.method == 'POST':
         return HttpResponseRedirect('/polls/hello/')
-    return render(request, "hello.html", {'name': request.session.get('user', None)})
+    return render(request, "polls/hello.html", {'name': request.session.get('user', None)})
 
 
 @csrf_exempt
 def touch(request):
     if request.method == 'POST':
         return HttpResponseRedirect('/polls/touch/')
-    return render(request, 'touch.html')
+    return render(request, 'polls/touch.html')
 
 
 @csrf_exempt
@@ -84,23 +87,24 @@ def index(request):
     if user:
         latest_question_list = Question.objects.order_by('-pub_date')[:5]
         output = ', '.join([q.question_text for q in latest_question_list])
-        return render(request, "index.html",
+        return render(request, "polls/index.html",
                       {'latest_question_list': latest_question_list, 'questions': output, 'name': user})
     else:
         return HttpResponseRedirect(reverse('login'))
 
 
 class Detail(View):
-
+    @class_method_authenticated
     def get(self, request, question_id):
         user = request.session.get('user', None)
         has_login = bool(user)
         # question = Question.objects.get(pk=question_id)
         question = get_object_or_404(Question, pk=question_id)
         choices = Choice.objects.filter(question_id=question_id)
-        return render(request, "detail.html",
+        return render(request, "polls/detail.html",
                       {'has_login': has_login, 'next': next, 'question': question, 'choices': choices, 'name': user})
 
+    @class_method_authenticated
     def post(self, request, question_id):
         user = request.session.get('user', None)
         has_login = bool(user)
@@ -125,7 +129,7 @@ class Detail(View):
             request.session[voted_id] = voted_choice
         else:
             kw.update({'Duplicate_Submission': True})
-            return render(request, 'detail.html', kw)
+            return render(request, 'polls/detail.html', kw)
         try:
             choice = Choice.objects.get(id=choice_id, question_id=question_id)
             print(choice)
@@ -136,10 +140,7 @@ class Detail(View):
             print(e)
         kw.update({'isSuccessful': isSuccessful})
 
-        return render(request, 'detail.html', kw)
-
-
-import json
+        return render(request, 'polls/detail.html', kw)
 
 
 @is_authenticated
@@ -167,7 +168,7 @@ class Register(View):
 
     def get(self, request):
 
-        return render(request, 'register.html')
+        return render(request, 'polls/register.html')
 
     def post(self, request):
         user_name = request.POST.get('user_name')
@@ -187,7 +188,7 @@ class Register(View):
             new_user.save()
             return HttpResponseRedirect(reverse('login'))
         else:
-            return render(request, 'register.html',
+            return render(request, 'polls/register.html',
                           {'failed': failed, 'duplicate_user_name': duplicate_user_name, 'just_failed': just_failed})
 
 
@@ -195,7 +196,7 @@ class Register(View):
 def beforeDrawing(request):
     user = request.session.get('user', None)
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    return render(request, "drawing.html",
+    return render(request, "polls/drawing.html",
                   {'latest_question_list': latest_question_list, 'name': user})
 
 
@@ -227,3 +228,8 @@ class Drawing(View):
 
         chart = open(pie_path).read()
         return HttpResponse(chart)
+
+
+
+
+

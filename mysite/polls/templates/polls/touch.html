@@ -1,0 +1,18 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hello {{name}}</title>
+   {% load static %}
+    <link rel="shortcut icon" href="{% static 'images/bilibili.ico' %}" type="image/x-icon">
+    <link rel="styleSheet" href="{% static 'css/index.css' %}" type="text/css">
+</head>
+<body>
+<h1> I'm touch ! </h1>
+    <input type="button" class="blue_btn" value="返回列表" onclick="javascript:window.location.href='/polls/'"/>
+
+<form action="/polls/hello/" method="post">
+<input type="submit" value="Touch Me">
+</form>
+</body>
+</html>

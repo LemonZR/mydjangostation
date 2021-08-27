@@ -1,0 +1,97 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>hello {{ name }}</title>
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
+    <link rel="styleSheet" href="{% static 'css/audio.css' %}" type="text/css">
+    <link rel="styleSheet" href="{% static 'css/index.css' %}" type="text/css">
+    <script src="{%  static 'js/audio.js'%}"></script>
+    <style type="text/css">
+    .rt{
+    width:auto;
+    height:0;
+    position:absolute;
+    top:20px;
+    right:10px;
+    }
+    .question:hover{color:red}
+
+
+
+    </style>
+
+</head>
+
+<body>
+<h1> Yo,Hello! </h1>
+<input type="button" class="blue_btn" value="返回列表" onclick="javascript:window.location.href='/polls/'"/>
+
+<div class="rt">
+
+    <span>
+        <form action="/polls/logout/" method="post">
+        <input type="submit" value="{{ name}}登出">
+    </form>
+    </span>
+
+</div>
+
+
+<p>
+<H1>Questions List</H1></p>
+
+
+<div>
+
+    {% if latest_question_list %}
+    {% csrf_token %}
+    <ul>
+        {% for question in latest_question_list %}
+
+        <li class="question" value="{{ question.id}}" style="cursor:hand">{{ question.question_text }} </li>
+
+        {% endfor %}
+    </ul>
+
+    {% else %}
+    <p>There is no polls </p>
+    {% endif %}
+
+</div>
+<p>
+<div id="drawing"></div>
+</p>
+<script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+<script type="text/javascript">
+        	$('.question').click(function () {
+        	    var csrf =$("input[name='csrfmiddlewaretoken']").val()
+                var question_id = $(this).val()
+
+		        $.ajax({
+				  url:  '/polls/drawing/'+question_id,
+				  type: 'get',
+				  async: false,
+				  headers:{'X-CSRFtoken':csrf},
+				  processData: false,// 告诉jQuery不要去处理发送的数据
+				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
+				  beforeSend: function () {//过程...
+				      console.log('正在进行，请稍候')
+
+				  },
+				  success: function (res) {
+                            $("#drawing").html(res);
+				   },
+				   error:function(){
+				   		console.log('404')
+				   }
+				})
+			})
+
+
+
+
+
+</script>
+</body>
+</html>

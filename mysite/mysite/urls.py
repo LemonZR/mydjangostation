@@ -33,14 +33,15 @@ from .views import index, favicon, error_404, error_500
 #
 # ]
 urlpatterns = [
-                  path('favicon.ico', favicon),
-                  path('', index),
-                  path('polls/', include('polls.urls')),
-                  path('admin/', admin.site.urls),
-                  re_path(r'^%s(?P<path>.*)$' % re.escape(STATIC_URL.lstrip('/')), serve,
-                          {'document_root': STATIC_ROOT})
+    path('favicon.ico', favicon),
+    path('', index),
+    path('polls/', include('polls.urls')),
+    path('mycharts/', include('mycharts.urls')),
+    path('admin/', admin.site.urls),
+    re_path(r'^%s(?P<path>.*)$' % re.escape(STATIC_URL.lstrip('/')), serve,
+            {'document_root': STATIC_ROOT})
 
-              ]
+]
 
 # def my_static(prefix, view=serve, **kwargs):
 #     """

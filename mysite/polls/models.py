@@ -36,6 +36,7 @@ class Choice(models.Model):
         return self.choice_text
 
 
+
 class Test(models.Model):
     context = models.CharField(max_length=100)
     create_time = models.DateTimeField(auto_now_add=True)
