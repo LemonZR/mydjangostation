@@ -125,13 +125,14 @@
 		        $.ajax({
 				  url:  '/mycharts/drawtable/',
 				  type: 'POST',
-				  async: true,//ajax的async设置为false时浏览器的渲染(UI)线程和js线程是互斥的，所以beforeSend是不会生效的。
+				  async: true,//ajax的async设置为false时浏览器的渲染(UI)线程和js线程是互斥的，所以修改ui的beforeSend是不会生效的。
 				  traditional:true,
 				  headers:{'X-CSRFtoken':csrf},
 				  data: JSON.stringify({'table_name':table_name}),
 				  processData: false,// 告诉jQuery不要去处理发送的数据
 				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
 				  beforeSend: function() {//过程...
+				    $(document.body).mask("正在处理...请稍等...");
                     $("#drawing").html('<H1 >Drawing...</H1>');
 				  },
 				  complete : function ()
