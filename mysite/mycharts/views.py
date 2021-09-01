@@ -68,12 +68,17 @@ def index(request):
 
 
 def searchtable(request):
+    time.sleep(0.1)  # 测试前端用户感知，测试结束去掉（我就不去）
     json_data = request.body.decode('utf-8')
     info = json.loads(json_data)
     find_str = info.get('find_str', '')
     table_names = TableData.objects.filter(table_name__contains=find_str).values('table_name')[:10]
 
     return render(request, 'mycharts/searchresult.html', {'tables': table_names})
+
+
+def update_index(request):
+    return render(request, 'mycharts/update.html')
 
 
 def update_table_data(request):
@@ -97,13 +102,13 @@ def drawtable(request):
     table_name = info.get('table_name', '').strip()
     print(table_name)
 
-    line_path = 'mycharts/render/tabledata/line_charts%s.html' % table_name.split('.')[1]
-    if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 3600:
+    line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
+    if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 86400:
         table = get_object_or_404(TableData, table_name=table_name)
         line_name = table.table_name
         table_data = table.table_data
         x_data = table_data.get("total_diff_rate").keys()
-        y_data = list(map(lambda x: 100 * x, table_data.get("total_diff_rate").values()))
+        y_data = table_data.get("total_diff_rate").values()
         line = (
             charts.Line()
                 .set_global_opts(
@@ -115,7 +120,7 @@ def drawtable(request):
                     splitline_opts=opts.SplitLineOpts(is_show=True),
 
                 ),
-                title_opts=opts.TitleOpts(title="差异比", subtitle="单位%")
+                title_opts=opts.TitleOpts(title="差异比", subtitle="单位1")
             )
                 .add_xaxis(xaxis_data=x_data)
                 .add_yaxis(
@@ -125,13 +130,92 @@ def drawtable(request):
                 itemstyle_opts=opts.ItemStyleOpts(border_color='#fff'),
                 markpoint_opts=opts.MarkPointOpts(
                     label_opts=opts.LabelOpts(color='#fff'),
-                    data=[opts.MarkPointItem(type_='max'), opts.MarkPointItem(type_='min')]),
+                    data=[opts.MarkPointItem(type_='max', name='最大值'), opts.MarkPointItem(type_='min', name='最小值'),
+                          opts.MarkLineItem(type_="average", name="平均值")]
+
+                ),
                 markline_opts=opts.MarkLineItem(type_='average'),
                 is_symbol_show=True,
                 label_opts=opts.LabelOpts(is_show=False),
                 is_connect_nones=True
             )
         )
+        line.render(line_path)
+
+    chart = open(line_path).read()
+    return HttpResponse(chart)
+
+
+def drawtable_detail(request):
+    time.sleep(0.1)  # 测试前端用户感知
+    json_data = request.body.decode('utf-8')
+    info = json.loads(json_data)
+    table_name = info.get('table_name', '').strip()
+    JSFUNC = """<span style='color:yellow;font-size:20px'>节点<span>
+     <span style='color:red;font-size:30px'>{line}<br>------<span>"""  # { 图表的名字 line } 或者{ @[index] }
+    line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
+    if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 86400:
+        table = get_object_or_404(TableData, table_name=table_name)
+        line_name = table.table_name
+        table_data = table.table_data
+        x_data = table_data.get("total_diff_rate").keys()
+        y_data = table_data.get("total_diff_rate").values()
+        column_diff_rate = table_data.get("column_diff_rate")
+
+        line = (
+            charts.Line()
+                .set_series_opts(label_opts=opts.LabelOpts(formatter=JSFUNC, position='right'))
+                .set_global_opts(
+                tooltip_opts=opts.TooltipOpts(is_show=True),
+                xaxis_opts=opts.AxisOpts(type_="category"),
+                yaxis_opts=opts.AxisOpts(
+                    type_="value",
+                    axistick_opts=opts.AxisTickOpts(is_show=True),
+                    splitline_opts=opts.SplitLineOpts(is_show=True),
+
+                ),
+                title_opts=opts.TitleOpts(title="差异比", subtitle="单位1")
+            )
+                .add_xaxis(xaxis_data=x_data)
+                .add_yaxis(
+                series_name=line_name,
+                y_axis=y_data,
+                symbol="circle",
+                itemstyle_opts=opts.ItemStyleOpts(border_color='#fff'),
+                markpoint_opts=opts.MarkPointOpts(
+                    label_opts=opts.LabelOpts(color='red'),
+                    data=[opts.MarkPointItem(type_='max', name='最大值'), opts.MarkPointItem(type_='min', name='最小值'),
+                          opts.MarkLineItem(type_="average", name="平均值")]
+
+                ),
+                markline_opts=opts.MarkLineItem(type_='average'),
+                is_symbol_show=True,
+                label_opts=opts.LabelOpts(is_show=False),
+                is_connect_nones=True
+            )
+        )
+        for column, diff_data in column_diff_rate.items():
+            tmp = []
+            for day in x_data:
+                tmp.append(diff_data.get(day, None))
+            line.add_yaxis(
+                series_name=column,
+                y_axis=tmp,
+                symbol="circle",
+                # itemstyle_opts=opts.ItemStyleOpts(border_color='#fff'),
+                # markpoint_opts=opts.MarkPointOpts(
+                #     label_opts=opts.LabelOpts(color='#fff'),
+                #     data=[opts.MarkPointItem(type_='max', name='最大值'), opts.MarkPointItem(type_='min', name='最小值'),
+                #           opts.MarkLineItem(type_="average", name="平均值")]
+                #
+                # ),
+
+                markline_opts=opts.MarkLineItem(type_='average'),
+                is_symbol_show=True,
+                label_opts=opts.LabelOpts(is_show=False),
+                is_connect_nones=True
+            )
+
         line.render(line_path)
 
     chart = open(line_path).read()

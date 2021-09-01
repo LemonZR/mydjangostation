@@ -8,14 +8,19 @@ def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化�
     data_dict = {}
     wb = openpyxl.load_workbook(file_name)
     sheet = wb[sheet_name]
-    data = list(sheet.rows)[1:6616]  # 需要用循环判断为空则跳过
+    data = list(sheet.rows)[1:]  # 1.首行为标题内容 2.需要用循环判断为空则跳过
 
     rows_value = list(x for x in list(map(lambda x: list(map(lambda y: y.value, x)), [x for x in data])))
     for line in rows_value:
         """['mk.tm_ac_owefee_down_d', '20210701', '231104', '0', 'pay_fee', '6010030.00', '0.00', '231104', 
         '6010030.00', '20210825', '1.000000', '1.000000'] """
         table_name = line[0]
-        day = time.strftime('%Y-%m-%d', time.strptime(line[1], '%Y%m%d'))
+
+        if not table_name:
+            # 为空则跳过
+            continue
+
+        day = time.strftime('%Y-%m-%d', time.strptime(str(line[1]), '%Y%m%d'))
         prov_total = float(line[2])
         jt_total = line[3]
         column_name = line[4]
@@ -38,4 +43,4 @@ def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化�
 if __name__ == '__main__':
     dt = getData()
 
-    pprint.pprint(dt)
+    # pprint.pprint(dt)

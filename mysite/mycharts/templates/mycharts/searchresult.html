@@ -1,8 +1,10 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>charts for  {{ table.table_name }} </title>
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
 </head>
 <body>
 <div>
@@ -27,17 +29,18 @@
                 this_button.attr("disabled",true);
                 var csrf =$("input[name='csrfmiddlewaretoken']").val()
                 var table_name =this_button.text()
+
 		        $.ajax({
 				  url:  '/mycharts/drawtable/',
 				  type: 'POST',
-				  async: false,
+				  async: true,
 				  traditional:true,
 				  headers:{'X-CSRFtoken':csrf},
 				  data: JSON.stringify({'table_name':table_name}),
 				  processData: false,// 告诉jQuery不要去处理发送的数据
 				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
 				  beforeSend: function() {//过程...
-
+                    $("#drawing").html('<H1 >Drawing...</H1>');
 				  },
 				  complete : function ()
 				  {

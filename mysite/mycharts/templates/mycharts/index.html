@@ -44,11 +44,9 @@
 
 
 
+
 </style>
 <h1> Yo,Hello! </h1>
-
-
-<input type="button" class="blue_btn" value="查看图吧" onclick="javascript:window.location.href='/mycharts/tabledata'"/>
 <p>
 <div class="rt">
 
@@ -91,18 +89,18 @@
 		        $.ajax({
 				  url:  '/mycharts/search/',
 				  type: 'POST',
-				  async: false,
+				  async: true,
 				  traditional:true,
 				  headers:{'X-CSRFtoken':csrf},
 				  data: JSON.stringify({'find_str':find_str}),
 				  processData: false,// 告诉jQuery不要去处理发送的数据
 				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
 				  beforeSend: function() {//过程...
-
+                    $("#showing").html('正在查询...');
 				  },
 				  complete : function ()
 				  {
-
+                this_button.attr("disabled",false);
 				  },
 				  success: function (res) {
 
@@ -114,9 +112,6 @@
 				   }
 				})
 
-			   setTimeout(function(){
-                this_button.attr("disabled",false);
-                }, 1000);
 
 			})
 ;
@@ -130,14 +125,14 @@
 		        $.ajax({
 				  url:  '/mycharts/drawtable/',
 				  type: 'POST',
-				  async: false,
+				  async: true,//ajax的async设置为false时浏览器的渲染(UI)线程和js线程是互斥的，所以beforeSend是不会生效的。
 				  traditional:true,
 				  headers:{'X-CSRFtoken':csrf},
 				  data: JSON.stringify({'table_name':table_name}),
 				  processData: false,// 告诉jQuery不要去处理发送的数据
 				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
 				  beforeSend: function() {//过程...
-
+                    $("#drawing").html('<H1 >Drawing...</H1>');
 				  },
 				  complete : function ()
 				  {
@@ -158,6 +153,7 @@
                 }, 1000);
 
 			})
+
 
 </script>
 <div id="drawing"></div>

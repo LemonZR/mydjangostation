@@ -7,7 +7,7 @@ from django.shortcuts import render
 
 def index(request):
     # return HttpResponse('Hello ')
-    return HttpResponseRedirect('polls/')
+    return HttpResponseRedirect('mycharts/')
 
 
 def favicon(request):

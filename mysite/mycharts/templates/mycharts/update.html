@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
+</head>
+<body>
+<form>{% csrf_token %}
+<input type="button" value="updates" id="update" ></form>
+
+<div id="showing"></div>
+<script type="text/javascript">
+        	    $('#update').click(function () {
+        	    this_button = $(this);
+                this_button.attr("disabled",true);
+                var csrf =$("input[name='csrfmiddlewaretoken']").val();
+                var table_name ='aaaatest';
+
+
+		        $.ajax({
+				  url:  '/mycharts/update/',
+				  type: 'POST',
+				  async: true,  //如果是false ，则其他方法执行不如意
+				  traditional:true,
+				  headers:{'X-CSRFtoken':csrf},
+				  data: JSON.stringify({'table_name':table_name}),
+				  processData: false,// 告诉jQuery不要去处理发送的数据
+				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
+				  beforeSend: function() {//过程...
+                    $("#showing").html('正在更新中');
+				  },
+				  complete : function ()
+				  {
+                    this_button.attr("disabled",false);
+				  },
+				  success: function (res) {
+
+                          $("#showing").html(res);
+
+				   },
+				   error:function(){
+				   		console.log('404')
+				   }
+				})
+
+
+
+			})
+
+</script>
+
+
+</body>
+</html>
