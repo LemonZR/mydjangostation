@@ -132,7 +132,6 @@
 				  processData: false,// 告诉jQuery不要去处理发送的数据
 				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
 				  beforeSend: function() {//过程...
-				    $(document.body).mask("正在处理...请稍等...");
                     $("#drawing").html('<H1 >Drawing...</H1>');
 				  },
 				  complete : function ()

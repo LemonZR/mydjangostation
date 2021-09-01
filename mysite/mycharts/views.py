@@ -68,7 +68,7 @@ def index(request):
 
 
 def searchtable(request):
-    time.sleep(0.1)  # 测试前端用户感知，测试结束去掉（我就不去）
+    # time.sleep(0.1)  # 测试前端用户感知，测试结束去掉（我就不去）
     json_data = request.body.decode('utf-8')
     info = json.loads(json_data)
     find_str = info.get('find_str', '')
@@ -88,6 +88,7 @@ def update_table_data(request):
             table = TableData.objects.get(table_name=key) if TableData.objects.filter(table_name=key) else TableData(
                 table_name=key)
             # table.table_data = json.dumps(v)
+            # table.clean()
             table.table_data = v
             table.save()
         return HttpResponse('Ok')
@@ -147,14 +148,14 @@ def drawtable(request):
 
 
 def drawtable_detail(request):
-    time.sleep(0.1)  # 测试前端用户感知
+    #  time.sleep(0.1)  # 测试前端用户感知
     json_data = request.body.decode('utf-8')
     info = json.loads(json_data)
     table_name = info.get('table_name', '').strip()
     JSFUNC = """<span style='color:yellow;font-size:20px'>节点<span>
      <span style='color:red;font-size:30px'>{line}<br>------<span>"""  # { 图表的名字 line } 或者{ @[index] }
     line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
-    if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 86400:
+    if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 60:
         table = get_object_or_404(TableData, table_name=table_name)
         line_name = table.table_name
         table_data = table.table_data
