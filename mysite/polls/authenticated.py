@@ -22,6 +22,6 @@ def class_method_authenticated(fn):
             return ret
         else:
             request.session.setdefault('HTTP_REFERER', request.get_full_path())
-            return redirect(reverse('login'))
+            return redirect(reverse('polls.login'))
 
     return inner

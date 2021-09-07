@@ -52,7 +52,7 @@ class Login(View):
                 request.session['HTTP_REFERER'] = ''
                 return HttpResponseRedirect(referer)
             else:
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('polls.index'))
             # return render(request, 'index.html', {'name': request.session.get('user')})
         else:
             return HttpResponseRedirect(reverse('login'))
@@ -61,7 +61,7 @@ class Login(View):
 @csrf_exempt
 def logout(request):
     request.session.flush()
-    return HttpResponseRedirect(reverse('login'))
+    return HttpResponseRedirect(reverse('polls.login'))
 
 
 @csrf_exempt
@@ -90,7 +90,7 @@ def index(request):
         return render(request, "polls/index.html",
                       {'latest_question_list': latest_question_list, 'questions': output, 'name': user})
     else:
-        return HttpResponseRedirect(reverse('login'))
+        return HttpResponseRedirect(reverse('polls.login'))
 
 
 class Detail(View):

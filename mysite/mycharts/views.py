@@ -5,18 +5,25 @@ import time
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 # render_to_response（）已弃用，取而代之的是render（）
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import TableData
+from .models import TableData, TableDependence
 from polls.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 from pyecharts import charts
 import pyecharts.options as opts
+from pyecharts.globals import ThemeType
 from .authenticated import is_authenticated, class_method_authenticated
-from .excel_data_generator import getData
+from .excel_data_generator import getData, get_dep
 import json
 
 
 class Login(View):
+    """curl localhost:8000/mycharts/login/
+        -F user=z -F passwd=123
+        -H "X-CSRFtoken:[the value]"
+        -b "csrftoken=[the same as above]"
+    """
+
     def get(self, request):
         user = request.session.get('user', None)
         referer = request.session.get('HTTP_REFERER', '')
@@ -32,6 +39,7 @@ class Login(View):
         user_name = request.POST.get('user', None)
         passwd = request.POST.get('passwd', None)
         referer = request.session.get('HTTP_REFERER', '')
+        print('login post :' + referer)
         try:
             user = User.objects.get(name=user_name)
             u_passwd = user.passwd
@@ -60,6 +68,7 @@ def logout(request):
     return HttpResponseRedirect(reverse('login'))
 
 
+@is_authenticated
 @csrf_exempt
 def index(request):
     table_name = TableData.objects.filter(table_id__lte=10, table_id__gte=0).values('table_name')
@@ -67,8 +76,11 @@ def index(request):
     return render(request, 'mycharts/index.html', {'tables': table_name})
 
 
+@is_authenticated
 def searchtable(request):
-    # time.sleep(0.1)  # 测试前端用户感知，测试结束去掉（我就不去）
+    if request.method == 'GET':
+        return HttpResponse('登录成功了，请刷新吧。这个页面还没做')
+    # time.sleep(0.1)  # 测试前端用户感知，测试结束去掉
     json_data = request.body.decode('utf-8')
     info = json.loads(json_data)
     find_str = info.get('find_str', '')
@@ -77,10 +89,12 @@ def searchtable(request):
     return render(request, 'mycharts/searchresult.html', {'tables': table_names})
 
 
+@is_authenticated
 def update_index(request):
     return render(request, 'mycharts/update.html')
 
 
+@is_authenticated
 def update_table_data(request):
     try:
         data = getData()
@@ -90,6 +104,22 @@ def update_table_data(request):
             # table.table_data = json.dumps(v)
             # table.clean()
             table.table_data = v
+            table.save()
+        return HttpResponse('Ok')
+    except Exception as e:
+        print(e)
+        return HttpResponse('No')
+
+
+def do_once(request):
+    try:
+        data = get_dep()
+        for key, v in data.items():
+            table = TableDependence.objects.get(table_name=key) if TableDependence.objects.filter(
+                table_name=key) else TableDependence(
+                table_name=key)
+
+            table.dependence = v
             table.save()
         return HttpResponse('Ok')
     except Exception as e:
@@ -164,9 +194,11 @@ def drawtable_detail(request):
         column_diff_rate = table_data.get("column_diff_rate")
 
         line = (
-            charts.Line()
+            charts.Line(init_opts=opts.InitOpts(theme=ThemeType.SHINE))
                 .set_series_opts(label_opts=opts.LabelOpts(formatter=JSFUNC, position='right'))
                 .set_global_opts(
+                toolbox_opts=opts.ToolboxOpts(is_show=True, feature=opts.ToolBoxFeatureOpts(
+                    save_as_image=opts.ToolBoxFeatureSaveAsImageOpts(is_show=True))),
                 tooltip_opts=opts.TooltipOpts(is_show=True),
                 xaxis_opts=opts.AxisOpts(type_="category"),
                 yaxis_opts=opts.AxisOpts(
@@ -221,3 +253,20 @@ def drawtable_detail(request):
 
     chart = open(line_path).read()
     return HttpResponse(chart)
+
+
+class RESTfulTest(View):
+    def get(self, request):
+        return HttpResponse('get')
+
+    def post(self, request):
+        return HttpResponse('post')
+
+    def delete(self, request):
+        return HttpResponse('delete')
+
+    def put(self, request):
+        return HttpResponse('put')
+
+    def zidingyi(self, request):  # 通过修改 View 类的http_method_names 内容可以增加自定义method
+        return HttpResponse('zidingyi')
