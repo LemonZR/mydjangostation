@@ -16,6 +16,8 @@ from .authenticated import is_authenticated, class_method_authenticated
 from .excel_data_generator import getData, get_dep
 import json
 
+basedir = os.path.dirname(__file__)
+print(basedir)
 
 class Login(View):
     """curl localhost:8000/mycharts/login/
@@ -72,6 +74,7 @@ def logout(request):
 @csrf_exempt
 def index(request):
     table_name = TableData.objects.filter(table_id__lte=10, table_id__gte=0).values('table_name')
+    table_name = TableData.objects.filter(table_id__lte=10, table_id__gte=0).values('table_name')
 
     return render(request, 'mycharts/index.html', {'tables': table_name})
 
@@ -79,7 +82,7 @@ def index(request):
 @is_authenticated
 def searchtable(request):
     if request.method == 'GET':
-        return HttpResponse('登录成功了，请刷新吧。这个页面还没做')
+        return HttpResponse('登录成功了，返回吧。这个页面还没做')
     # time.sleep(0.1)  # 测试前端用户感知，测试结束去掉
     json_data = request.body.decode('utf-8')
     info = json.loads(json_data)
