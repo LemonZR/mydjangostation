@@ -5,6 +5,7 @@ import time
 
 
 def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化数据核对\核对清单\aaa_mk日模型核对情况-整体.xlsx', sheet_name='差异清单指标级'):
+#def getData(file_name=r'D:\20211029\aaa_mk日模型核对情况-整体.xlsx', sheet_name='差异清单指标级'):
     data_dict = {}
     wb = openpyxl.load_workbook(file_name)
     sheet = wb[sheet_name]

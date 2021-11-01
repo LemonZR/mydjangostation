@@ -16,8 +16,6 @@ from .authenticated import is_authenticated, class_method_authenticated
 from .excel_data_generator import getData, get_dep
 import json
 
-basedir = os.path.dirname(__file__)
-print(basedir)
 
 class Login(View):
     """curl localhost:8000/mycharts/login/
@@ -51,7 +49,7 @@ class Login(View):
         print('POST user:%s' % user)
 
         if user is not None and passwd == u_passwd:
-            request.session.set_expiry(600)
+            request.session.set_expiry(0)  # 关闭浏览器失效
             request.session['user'] = user_name
             request.session['passwd'] = passwd
             if referer:
@@ -73,10 +71,11 @@ def logout(request):
 @is_authenticated
 @csrf_exempt
 def index(request):
+    user = request.session.get('user')
     table_name = TableData.objects.filter(table_id__lte=10, table_id__gte=0).values('table_name')
     table_name = TableData.objects.filter(table_id__lte=10, table_id__gte=0).values('table_name')
 
-    return render(request, 'mycharts/index.html', {'tables': table_name})
+    return render(request, 'mycharts/index.html', {'tables': table_name,'name':user})
 
 
 @is_authenticated
@@ -200,8 +199,8 @@ def drawtable_detail(request):
             charts.Line(init_opts=opts.InitOpts(theme=ThemeType.SHINE))
                 .set_series_opts(label_opts=opts.LabelOpts(formatter=JSFUNC, position='right'))
                 .set_global_opts(
-                toolbox_opts=opts.ToolboxOpts(is_show=True, feature=opts.ToolBoxFeatureOpts(
-                    save_as_image=opts.ToolBoxFeatureSaveAsImageOpts(is_show=True))),
+                # toolbox_opts=opts.ToolboxOpts(is_show=True, feature=opts.ToolBoxFeatureOpts(
+                #     save_as_image=opts.ToolBoxFeatureSaveAsImageOpts(is_show=True))),
                 tooltip_opts=opts.TooltipOpts(is_show=True),
                 xaxis_opts=opts.AxisOpts(type_="category"),
                 yaxis_opts=opts.AxisOpts(

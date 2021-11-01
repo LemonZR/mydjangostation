@@ -7,8 +7,10 @@
     <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
 </head>
 <body>
+<div style="padding:2px;margin-bottom:10px;;width:70px"><a href="/mycharts/">返回首页</a></div>
 <form>{% csrf_token %}
 <input type="button" value="updates" id="update" ></form>
+
 
 <div id="showing"></div>
 <script type="text/javascript">

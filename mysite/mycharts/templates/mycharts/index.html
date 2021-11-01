@@ -168,6 +168,7 @@
 				  type: 'POST',
 				  async: true,//ajax的async设置为false时浏览器的渲染(UI)线程和js线程是互斥的，所以修改ui的beforeSend是不会生效的。
 				  traditional:true,
+				  timeout:4000,
 				  headers:{'X-CSRFtoken':csrf},
 				  data: JSON.stringify({'table_name':table_name}),
 				  processData: false,// 告诉jQuery不要去处理发送的数据
@@ -186,7 +187,13 @@
 				   },
 				   error:function(){
 				   		console.log('404')
-				   }
+				   },
+				   				   　　complete : function(XMLHttpRequest,status){ //请求完成后最终执行参数
+ 　　　                　if(status=='timeout'){//超时,status还有success,error等值的情况
+                     $("#drawing").html("请求响应超时");
+
+            　　　　}
+            　　}
 				})
 
 			   setTimeout(function(){
