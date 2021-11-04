@@ -56,7 +56,7 @@ class Login(View):
                 request.session['HTTP_REFERER'] = ''
                 return HttpResponseRedirect(referer)
             else:
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('mycharts:index'))
             # return render(request, 'index.html', {'name': request.session.get('user')})
         else:
             return HttpResponseRedirect(reverse('login'))
@@ -65,7 +65,7 @@ class Login(View):
 @csrf_exempt
 def logout(request):
     request.session.flush()
-    return HttpResponseRedirect(reverse('login'))
+    return HttpResponseRedirect(reverse('mycharts:login'))
 
 
 @is_authenticated

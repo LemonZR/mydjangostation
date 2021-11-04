@@ -29,7 +29,7 @@ class Login(View):
             if referer:
                 return HttpResponseRedirect(referer)
             else:
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('polls:index'))
         return render(request, 'polls/login.html')
 
     def post(self, request):
@@ -52,7 +52,7 @@ class Login(View):
                 request.session['HTTP_REFERER'] = ''
                 return HttpResponseRedirect(referer)
             else:
-                return HttpResponseRedirect(reverse('polls.index'))
+                return HttpResponseRedirect(reverse('polls:index'))
             # return render(request, 'index.html', {'name': request.session.get('user')})
         else:
             return HttpResponseRedirect(reverse('login'))
@@ -61,7 +61,7 @@ class Login(View):
 @csrf_exempt
 def logout(request):
     request.session.flush()
-    return HttpResponseRedirect(reverse('polls.login'))
+    return HttpResponseRedirect(reverse('polls:login'))
 
 
 @csrf_exempt
@@ -90,7 +90,7 @@ def index(request):
         return render(request, "polls/index.html",
                       {'latest_question_list': latest_question_list, 'questions': output, 'name': user})
     else:
-        return HttpResponseRedirect(reverse('polls.login'))
+        return HttpResponseRedirect(reverse('polls:login'))
 
 
 class Detail(View):
@@ -109,7 +109,7 @@ class Detail(View):
         user = request.session.get('user', None)
         has_login = bool(user)
         if not has_login:
-            return HttpResponseRedirect(reverse('login'))
+            return HttpResponseRedirect(reverse('polls:login'))
 
         isSuccessful = False
         choice_id = request.POST.get('choice_id', None)
@@ -186,7 +186,7 @@ class Register(View):
             print(user_name)
             new_user = User(name=user_name, passwd=passwd, age=0)
             new_user.save()
-            return HttpResponseRedirect(reverse('login'))
+            return HttpResponseRedirect(reverse('polls:login'))
         else:
             return render(request, 'polls/register.html',
                           {'failed': failed, 'duplicate_user_name': duplicate_user_name, 'just_failed': just_failed})

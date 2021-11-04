@@ -8,11 +8,11 @@
 
 </head>
 <body>
-    <div id="b1ff583d4f994e40bf43f1954e254dd7" class="chart-container" style="width:900px; height:500px;"></div>
+    <div id="ebba51696ae74561a9d3605847ebbf21" class="chart-container" style="width:900px; height:500px;"></div>
     <script>
-        var chart_b1ff583d4f994e40bf43f1954e254dd7 = echarts.init(
-            document.getElementById('b1ff583d4f994e40bf43f1954e254dd7'), 'shine', {renderer: 'canvas'});
-        var option_b1ff583d4f994e40bf43f1954e254dd7 = {
+        var chart_ebba51696ae74561a9d3605847ebbf21 = echarts.init(
+            document.getElementById('ebba51696ae74561a9d3605847ebbf21'), 'shine', {renderer: 'canvas'});
+        var option_ebba51696ae74561a9d3605847ebbf21 = {
     "animation": true,
     "animationThreshold": 2000,
     "animationDuration": 1000,
@@ -24,7 +24,7 @@
     "series": [
         {
             "type": "line",
-            "name": "mk.tm_ac_owefee_down_d",
+            "name": "mk.tm_sc_acpt_tc_subs_d",
             "connectNulls": true,
             "symbol": "circle",
             "symbolSize": 4,
@@ -34,11 +34,15 @@
             "step": false,
             "data": [
                 [
-                    "2021-10-26",
+                    "2021-09-30",
                     1.0
                 ],
                 [
-                    "2021-10-27",
+                    "2021-10-02",
+                    1.0
+                ],
+                [
+                    "2021-10-05",
                     1.0
                 ]
             ],
@@ -91,7 +95,7 @@
         },
         {
             "type": "line",
-            "name": "pay_fee",
+            "name": "fav_val",
             "connectNulls": true,
             "symbol": "circle",
             "symbolSize": 4,
@@ -101,11 +105,153 @@
             "step": false,
             "data": [
                 [
-                    "2021-10-26",
+                    "2021-09-30",
                     1.0
                 ],
                 [
-                    "2021-10-27",
+                    "2021-10-02",
+                    1.0
+                ],
+                [
+                    "2021-10-05",
+                    1.0
+                ]
+            ],
+            "hoverAnimation": true,
+            "label": {
+                "show": false,
+                "position": "top",
+                "margin": 8
+            },
+            "lineStyle": {
+                "show": true,
+                "width": 1,
+                "opacity": 1,
+                "curveness": 0,
+                "type": "solid"
+            },
+            "areaStyle": {
+                "opacity": 0
+            },
+            "markLine": {
+                "type": "average"
+            },
+            "zlevel": 0,
+            "z": 0
+        },
+        {
+            "type": "line",
+            "name": "deal_date",
+            "connectNulls": true,
+            "symbol": "circle",
+            "symbolSize": 4,
+            "showSymbol": true,
+            "smooth": false,
+            "clip": true,
+            "step": false,
+            "data": [
+                [
+                    "2021-09-30",
+                    1.0
+                ],
+                [
+                    "2021-10-02",
+                    1.0
+                ],
+                [
+                    "2021-10-05",
+                    1.0
+                ]
+            ],
+            "hoverAnimation": true,
+            "label": {
+                "show": false,
+                "position": "top",
+                "margin": 8
+            },
+            "lineStyle": {
+                "show": true,
+                "width": 1,
+                "opacity": 1,
+                "curveness": 0,
+                "type": "solid"
+            },
+            "areaStyle": {
+                "opacity": 0
+            },
+            "markLine": {
+                "type": "average"
+            },
+            "zlevel": 0,
+            "z": 0
+        },
+        {
+            "type": "line",
+            "name": "accept_time",
+            "connectNulls": true,
+            "symbol": "circle",
+            "symbolSize": 4,
+            "showSymbol": true,
+            "smooth": false,
+            "clip": true,
+            "step": false,
+            "data": [
+                [
+                    "2021-09-30",
+                    1.0
+                ],
+                [
+                    "2021-10-02",
+                    1.0
+                ],
+                [
+                    "2021-10-05",
+                    1.0
+                ]
+            ],
+            "hoverAnimation": true,
+            "label": {
+                "show": false,
+                "position": "top",
+                "margin": 8
+            },
+            "lineStyle": {
+                "show": true,
+                "width": 1,
+                "opacity": 1,
+                "curveness": 0,
+                "type": "solid"
+            },
+            "areaStyle": {
+                "opacity": 0
+            },
+            "markLine": {
+                "type": "average"
+            },
+            "zlevel": 0,
+            "z": 0
+        },
+        {
+            "type": "line",
+            "name": "checkin_date",
+            "connectNulls": true,
+            "symbol": "circle",
+            "symbolSize": 4,
+            "showSymbol": true,
+            "smooth": false,
+            "clip": true,
+            "step": false,
+            "data": [
+                [
+                    "2021-09-30",
+                    1.0
+                ],
+                [
+                    "2021-10-02",
+                    1.0
+                ],
+                [
+                    "2021-10-05",
                     1.0
                 ]
             ],
@@ -135,12 +281,18 @@
     "legend": [
         {
             "data": [
-                "mk.tm_ac_owefee_down_d",
-                "pay_fee"
+                "mk.tm_sc_acpt_tc_subs_d",
+                "fav_val",
+                "deal_date",
+                "accept_time",
+                "checkin_date"
             ],
             "selected": {
-                "mk.tm_ac_owefee_down_d": true,
-                "pay_fee": true
+                "mk.tm_sc_acpt_tc_subs_d": true,
+                "fav_val": true,
+                "deal_date": true,
+                "accept_time": true,
+                "checkin_date": true
             },
             "show": true,
             "padding": 5,
@@ -229,7 +381,7 @@
         }
     ]
 };
-        chart_b1ff583d4f994e40bf43f1954e254dd7.setOption(option_b1ff583d4f994e40bf43f1954e254dd7);
+        chart_ebba51696ae74561a9d3605847ebbf21.setOption(option_ebba51696ae74561a9d3605847ebbf21);
     </script>
 </body>
 </html>

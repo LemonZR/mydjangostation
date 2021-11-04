@@ -128,7 +128,7 @@
                 var csrf =$("input[name='csrfmiddlewaretoken']").val()
                 var find_str =$('#find_str').val()
 		        $.ajax({
-				  url:  '/mycharts/search/',
+				  url:  '{% url 'mycharts:searchtable'%}',
 				  type: 'POST',
 				  async: true,
 				  traditional:true,
@@ -164,7 +164,7 @@
                 var table_name =this_button.text()
 
 		        $.ajax({
-				  url:  '/mycharts/drawtable/',
+				  url:  '{% url 'mycharts:drawtable' %}',
 				  type: 'POST',
 				  async: true,//ajax的async设置为false时浏览器的渲染(UI)线程和js线程是互斥的，所以修改ui的beforeSend是不会生效的。
 				  traditional:true,

@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+app_name ='mycharts'
 urlpatterns = [
     path('', views.index, name='index'),
     path('drawtable/', views.drawtable_detail, name='drawtable'),
