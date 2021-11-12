@@ -16,6 +16,9 @@ from .authenticated import is_authenticated, class_method_authenticated
 from .excel_data_generator import getData, get_dep
 import json
 
+app_dir = os.path.dirname(__file__)
+# project_dir =os.path.dirname(BaseDir)
+
 
 class Login(View):
     """curl localhost:8000/mycharts/login/
@@ -133,9 +136,10 @@ def drawtable(request):
     json_data = request.body.decode('utf-8')
     info = json.loads(json_data)
     table_name = info.get('table_name', '').strip()
-    print(table_name)
 
-    line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
+    # line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
+    # 部署到apache服务器后需要使用绝对路径
+    line_path = os.path.join(app_dir,'render/tabledata/charts_%s.html' % table_name.split('.')[1])
     if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 86400:
         table = get_object_or_404(TableData, table_name=table_name)
         line_name = table.table_name
@@ -186,7 +190,10 @@ def drawtable_detail(request):
     table_name = info.get('table_name', '').strip()
     JSFUNC = """<span style='color:yellow;font-size:20px'>节点<span>
      <span style='color:red;font-size:30px'>{line}<br>------<span>"""  # { 图表的名字 line } 或者{ @[index] }
-    line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
+    # line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
+    # 部署到apache服务器后需要使用绝对路径
+    line_path = os.path.join(app_dir,'render/tabledata/charts_%s.html' % table_name.split('.')[1])
+    print("line_path %s" %line_path)
     if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 60:
         table = get_object_or_404(TableData, table_name=table_name)
         line_name = table.table_name

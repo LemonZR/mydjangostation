@@ -28,9 +28,9 @@ SECRET_KEY = '%lf1&v^^^f_&*sr=y=i$f20g+gc6t_21(3lln)f%4#=0^d83y@'
 # SECURITY WARNING: don't run with debug turned on in production!
 # 默认是 DEBUG = True
 
-DEBUG = True  # False 状态下需要配置STATIC_ROOT
+DEBUG = False  # False 状态下需要配置STATIC_ROOT
 # ALLOWED_HOSTS = ["127.0.0.1", ]
-ALLOWED_HOSTS = ["*", "192.168.2.7"]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
@@ -127,8 +127,8 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'my_static')  # 开发模式使用
+STATICFILES_DIRS = [  # 添加自己的静态文件路径
+    os.path.join(BASE_DIR, 'my_static'),# 仅在开发模式下才会被使用,用于正式环境收集静态文件使用
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')  # 部署的时候，nginx等会把项目的静态文件都放到这里
 LOGGING = {
@@ -136,7 +136,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
         },
     },

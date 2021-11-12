@@ -36,7 +36,7 @@ urlpatterns = [
     path('favicon.ico', favicon),
     path('', index),
     path('polls/', include('polls.urls')),
-    path('mycharts/', include('mycharts.urls')),
+    path('mycharts/', include('mycharts.urls'), name='mycharts'),
     path('admin/', admin.site.urls),
     re_path(r'^%s(?P<path>.*)$' % re.escape(STATIC_URL.lstrip('/')), serve,
             {'document_root': STATIC_ROOT})
