@@ -5,6 +5,7 @@ import time
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 # render_to_response（）已弃用，取而代之的是render（）
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from .models import TableData, TableDependence
 from polls.models import User
 from django.views.decorators.csrf import csrf_exempt
@@ -35,7 +36,7 @@ class Login(View):
             if referer:
                 return HttpResponseRedirect(referer)
             else:
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('mycharts:index'))
         return render(request, 'mycharts/login.html')
 
     def post(self, request):
@@ -76,7 +77,7 @@ def logout(request):
 def index(request):
     user = request.session.get('user')
     table_name = TableData.objects.filter(table_id__lte=10, table_id__gte=0).values('table_name')
-    table_name = TableData.objects.filter(table_id__lte=10, table_id__gte=0).values('table_name')
+
 
     return render(request, 'mycharts/index.html', {'tables': table_name,'name':user})
 
@@ -89,9 +90,20 @@ def searchtable(request):
     json_data = request.body.decode('utf-8')
     info = json.loads(json_data)
     find_str = info.get('find_str', '')
-    table_names = TableData.objects.filter(table_name__contains=find_str).values('table_name')[:10]
+    current_page = info.get('pn',1)
+    # table_names = TableData.objects.filter(table_name__contains=find_str).values('table_name')[:10]
+    table_names = TableData.objects.filter(table_name__contains=find_str).values('table_name').order_by()
+    paginator = Paginator(table_names, 10)  # Paginator生成一个对象，然后传入queryset,
+    try:  # 以及每页显示的个数，这里每页显示十个
+        page_obj = paginator.page(current_page)  # 根据get方法取到的数字显示页数
+    except EmptyPage as e:  # 如果get方法获取了一个没有的页数则显示第一页
+        page_obj = paginator.page(1)
+    except PageNotAnInteger as e:  # 传入一个字符串也显示第一页
+        page_obj = paginator.page(1)
+    pagerange = paginator.get_elided_page_range(current_page,on_each_side=3,on_ends=2)
+    page_obj.my_page_range =pagerange
 
-    return render(request, 'mycharts/searchresult.html', {'tables': table_names})
+    return render(request, 'mycharts/searchresult.html', {'tables': table_names,'page_obj': page_obj})
 
 
 @is_authenticated

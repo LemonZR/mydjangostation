@@ -14,14 +14,14 @@
 </head>
 
 <body>
-<div>
-    <input type="button" class="resttest" value="get">
-    <input type="button" class="resttest" value="put">
-    <input type="button" class="resttest" value="delete">
-    <input type="button" class="resttest" value="post">
-    <input type="button" class="resttest" value="zidingyi">
-</div>
-<div id="showMethod">showMethod</div>
+<!--<div>-->
+<!--    <input type="button" class="resttest" value="get">-->
+<!--    <input type="button" class="resttest" value="put">-->
+<!--    <input type="button" class="resttest" value="delete">-->
+<!--    <input type="button" class="resttest" value="post">-->
+<!--    <input type="button" class="resttest" value="zidingyi">-->
+<!--</div>-->
+<!--<div id="showMethod">showMethod</div>-->
 <style type="text/css">
     .rt{
     width:auto;
@@ -69,7 +69,7 @@
 <p>
 <H1>Table List</H1>
 </p>
-<input type="text" id="find_str" placeholder="查询的表名"><input type="button" value="查询" id="search">
+<input type="search" id="find_str" placeholder="查询的表名"><input type="button" value="查询" id="search">
 <div id="showing">
     <form>
         {% csrf_token %}
@@ -85,7 +85,7 @@
     </form>
 </div>
 
-<script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+<script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
 <script type="text/javascript">
         	    $('.resttest').click(function () {
         	    this_button = $(this)

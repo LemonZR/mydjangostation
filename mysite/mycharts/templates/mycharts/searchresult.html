@@ -3,26 +3,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>charts for  {{ table.table_name }} </title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" >
     <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
 </head>
 <body>
 <div>
-    <form>
-        {% csrf_token %}
+<!--    <form>-->
+<!--        {% csrf_token %}-->
 
-        <ul>
-            {% for table in tables %}
-            <li class="table_name" style="cursor:hand" >{{ table.table_name }}</li>
+<!--        <ul>-->
+<!--            {% for table in tables %}-->
+<!--            <li class="table_name" style="cursor:hand" >{{ table.table_name }}</li>-->
 
-            {% endfor %}
+<!--            {% endfor %}-->
 
-        </ul>
+<!--        </ul>-->
 
-    </form>
+<!--    </form>-->
+    {% csrf_token %}
+    <ul>
+        {% for table in page_obj.object_list %}
+        <li class="table_name" style="cursor:hand" >{{ table.table_name }}</li>
+        {% endfor %}
+    </ul>
+<ul class="pagination">
+  {# 如果当前页还有上一页 #}
+  {% if page_obj.has_previous %}
+   <li>
+    <input class="pagebutton" value="{{page.previous_page_number}}"> >上一页</a>
+   </li>
+  {% else %}
+   {# 如果没有上一页， 则上一页按钮不可点击 #}
+   <li class="disabled">
+    <a href="#">上一页</a>
+   </li>
+  {% endif %}
+
+  {% for page_number in page_obj.my_page_range %}
+   {# 获取当前页的页码 #}
+   {% if page_number == page_obj.number %}
+    {# 如果是当前页的话，选中 #}
+    <li class="active">
+     <a href="?index={{ page_number }}">{{ page_number }}</a>
+    </li>
+   {% else %}
+    <li>
+     <input type="button" class="pagebutton" value="{{ page_number }}">
+    </li>
+   {% endif %}
+
+  {% endfor %}
+
+  {% if page_obj.has_next %}
+   <li>
+    <input type="button" class="pagebutton" value="{{ page_obj.next_page_number }}">下一页
+   </li>
+  {% else %}
+  <li class="disabled">
+   <a href="#" >下一页</a>
+  </li>
+  {% endif %}
+ </ul>
+
+
 </div>
 </body>
-<script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+
+
+<script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
 <script type="text/javascript">
         	    $('.table_name').click(function () {
         	    this_button = $(this)

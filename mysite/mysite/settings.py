@@ -60,7 +60,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'my_static/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'my_static/templates')],  # 公用模板
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,7 +128,7 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [  # 添加自己的静态文件路径
-    os.path.join(BASE_DIR, 'my_static'),# 仅在开发模式下才会被使用,用于正式环境收集静态文件使用
+    os.path.join(BASE_DIR, 'my_static'),  # 仅在开发模式下才会被使用,用于正式环境收集静态文件使用
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')  # 部署的时候，nginx等会把项目的静态文件都放到这里
 LOGGING = {
@@ -149,5 +149,3 @@ LOGGING = {
 
     }
 }
-
-

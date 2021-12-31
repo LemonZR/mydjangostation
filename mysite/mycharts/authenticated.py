@@ -23,7 +23,8 @@ def class_method_authenticated(fn):
             ret = fn(self, request, *args, **kwargs)
             return ret
         else:
-            request.session.setdefault('HTTP_REFERER', request.get_full_path())
+            # request.session.setdefault('HTTP_REFERER', request.get_full_path())
+            request.session['HTTP_REFERER'] = request.get_full_path()
             return redirect(reverse('mycharts:login'))
 
     return inner
