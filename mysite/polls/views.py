@@ -55,7 +55,7 @@ class Login(View):
                 return HttpResponseRedirect(reverse('polls:index'))
             # return render(request, 'index.html', {'name': request.session.get('user')})
         else:
-            return HttpResponseRedirect(reverse('login'))
+            return HttpResponseRedirect(reverse('polls:login'))
 
 
 @csrf_exempt
@@ -76,6 +76,11 @@ def hello(request):
 def touch(request):
     if request.method == 'POST':
         return HttpResponseRedirect('/polls/touch/')
+    # 删除管理员
+    # from django.contrib.auth.models import User
+    # user = User.objects.get_by_natural_key('zr')
+    # user.delete()
+    #
     return render(request, 'polls/touch.html')
 
 

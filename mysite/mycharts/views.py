@@ -63,7 +63,7 @@ class Login(View):
                 return HttpResponseRedirect(reverse('mycharts:index'))
             # return render(request, 'index.html', {'name': request.session.get('user')})
         else:
-            return HttpResponseRedirect(reverse('login'))
+            return HttpResponseRedirect(reverse('mycharts:login'))
 
 
 @csrf_exempt
@@ -92,7 +92,7 @@ def searchtable(request):
     find_str = info.get('find_str', '')
     current_page = info.get('pn',1)
     # table_names = TableData.objects.filter(table_name__contains=find_str).values('table_name')[:10]
-    table_names = TableData.objects.filter(table_name__contains=find_str).values('table_name').order_by()
+    table_names = TableData.objects.filter(table_name__contains=find_str).order_by('table_id').values('table_name')
     paginator = Paginator(table_names, 10)  # Paginator生成一个对象，然后传入queryset,
     try:  # 以及每页显示的个数，这里每页显示十个
         page_obj = paginator.page(current_page)  # 根据get方法取到的数字显示页数
@@ -205,7 +205,6 @@ def drawtable_detail(request):
     # line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
     # 部署到apache服务器后需要使用绝对路径
     line_path = os.path.join(app_dir,'render/tabledata/charts_%s.html' % table_name.split('.')[1])
-    print("line_path %s" %line_path)
     if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 60:
         table = get_object_or_404(TableData, table_name=table_name)
         line_name = table.table_name

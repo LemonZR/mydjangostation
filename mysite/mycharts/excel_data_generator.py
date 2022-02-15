@@ -5,7 +5,7 @@ import time
 
 
 def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化数据核对\核对清单\aaa_mk日模型核对情况-整体.xlsx', sheet_name='差异清单指标级'):
-#def getData(file_name=r'D:\20211029\aaa_mk日模型核对情况-整体.xlsx', sheet_name='差异清单指标级'):
+# def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化数据核对\核对清单\bbb_mk月模型核对情况-整体.xlsx', sheet_name='mk月模型差异清单指标级'):
     data_dict = {}
     wb = openpyxl.load_workbook(file_name)
     sheet = wb[sheet_name]
@@ -22,6 +22,7 @@ def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化�
             continue
 
         day = time.strftime('%Y-%m-%d', time.strptime(str(line[1]), '%Y%m%d'))
+        # day = time.strftime('%Y-%m', time.strptime(str(line[1]), '%Y%m'))
         prov_total = float(line[2])
         jt_total = line[3]
         column_name = line[4]

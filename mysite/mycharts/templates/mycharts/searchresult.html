@@ -30,7 +30,7 @@
   {# 如果当前页还有上一页 #}
   {% if page_obj.has_previous %}
    <li>
-    <input class="pagebutton" value="{{page.previous_page_number}}"> >上一页</a>
+    <input class="pagebutton" value="{{page.previous_page_number}}"> 上一页
    </li>
   {% else %}
    {# 如果没有上一页， 则上一页按钮不可点击 #}
@@ -56,7 +56,7 @@
 
   {% if page_obj.has_next %}
    <li>
-    <input type="button" class="pagebutton" value="{{ page_obj.next_page_number }}">下一页
+    <input type="button" class="pagebutton" value="{{ page_obj.next_page_number }}">
    </li>
   {% else %}
   <li class="disabled">
