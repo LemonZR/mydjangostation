@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=9"/>
     <meta http-equiv="X-UA-Compatible" content="IE=10"/>
-
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" >
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <title>hello {{ name }}</title>
     <script type="text/javascript" src="{% static 'js/jquery-3.4.1.js' %}"></script>
@@ -87,41 +87,7 @@
 
 <script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
 <script type="text/javascript">
-        	    $('.resttest').click(function () {
-        	    this_button = $(this)
-        	    var testType = this_button.val()
 
-                this_button.attr("disabled",true);
-                var csrf =$("input[name='csrfmiddlewaretoken']").val()
-		        $.ajax({
-				  url:  '/mycharts/restTest/',
-				  type: testType,
-				  async: true,
-				  traditional:true,
-				  headers:{'X-CSRFtoken':csrf},
-				  data: null,
-				  processData: false,// 告诉jQuery不要去处理发送的数据
-				  contentType: false,// 告诉jQuery不要去设置Content-Type请求头
-				  beforeSend: function() {//过程...
-                    $("#showMethod").html('正在查询...');
-				  },
-				  complete : function ()
-				  {
-                this_button.attr("disabled",false);
-				  },
-				  success: function (res) {
-
-                          $("#showMethod").html(res);
-
-				   },
-				   error:function(){
-				   		console.log('404')
-				   }
-				})
-
-
-			})
-;
         	    $('#search').click(function () {
         	    this_button = $(this)
                 this_button.attr("disabled",true);
