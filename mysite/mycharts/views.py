@@ -72,8 +72,8 @@ def logout(request):
     return HttpResponseRedirect(reverse('mycharts:login'))
 
 
-@is_authenticated
-@csrf_exempt
+# @is_authenticated
+# @csrf_exempt
 def index(request):
     user = request.session.get('user')
     table_name = TableData.objects.filter(table_id__lte=10, table_id__gte=0).values('table_name')
@@ -161,7 +161,7 @@ def drawtable(request):
         line = (
             charts.Line()
                 .set_global_opts(
-                tooltip_opts=opts.TooltipOpts(is_show=False),
+                tooltip_opts=opts.TooltipOpts(is_show=True),
                 xaxis_opts=opts.AxisOpts(type_="category"),
                 yaxis_opts=opts.AxisOpts(
                     type_="value",

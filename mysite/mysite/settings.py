@@ -28,7 +28,7 @@ SECRET_KEY = '%lf1&v^^^f_&*sr=y=i$f20g+gc6t_21(3lln)f%4#=0^d83y@'
 # SECURITY WARNING: don't run with debug turned on in production!
 # 默认是 DEBUG = True
 
-DEBUG = False  # False 状态下需要配置STATIC_ROOT
+DEBUG = True  # False 状态下需要配置STATIC_ROOT
 # ALLOWED_HOSTS = ["127.0.0.1", ]
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.2.7']
 # Application definition
