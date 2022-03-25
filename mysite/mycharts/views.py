@@ -124,25 +124,33 @@ def update_table_data(request):
         sixtyDaysAgo = (datetime.datetime.now() - datetime.timedelta(days=60)).strftime('%Y-%m-%d')
         for key, v in data.items():
             table = TableData.objects.get(table_name=key) if TableData.objects.filter(table_name=key) else TableData(
-                table_name=key,table_data=dict())
-            #删除数据库中需要更新的记录数差异记录
-            min_tot_date,max_tot_date = min(v['total_diff_rate'].keys()),max(v['total_diff_rate'].keys())
-            day_exists = list(table.table_data.setdefault('total_diff_rate',{}).keys())
-            for day in day_exists:
-                if min_tot_date <= day <= max_tot_date or day < sixtyDaysAgo:
+                table_name=key, table_data=dict())
+            # 获取需要更新的最大最小账期 min_day,max_day
+            min_max_set = set()
+            min_max_set.add(min(v['total_diff_rate'].keys()))
+            min_max_set.add(max(v['total_diff_rate'].keys()))
+            for column, info in v['column_diff_rate'].items():
+                min_max_set.add(min(info.keys()))
+                min_max_set.add(max(info.keys()))
+            min_day, max_day = min(min_max_set), max(min_max_set)
+
+            # 1.删掉数据库中【所有】指标相应周期的数据（data中的指标最小和最大账期之间的数据,以及小于sixtyDaysAgo的账期数据），然后更新。
+            # 删除数据库中需要更新的总记录数差异记录
+            day_total_exists = list(table.table_data.setdefault('total_diff_rate', {}).keys())
+            for day in day_total_exists:
+                if min_day <= day <= max_day or day < sixtyDaysAgo:
                     del table.table_data['total_diff_rate'][day]
             # 删除数据库中需要更新的指标差异记录
-            for column,info in v['column_diff_rate'].items():
-                # 1.删掉数据库中每个指标相应周期的数据（data中的指标最小和最大账期之间的数据,以及小于sixtyDaysAgo的账期数据），然后更新。
-                min_diff_date ,max_diff_date = min(info.keys()),max(info.keys())
-                day_exists = list(table.table_data.setdefault('column_diff_rate',{}).setdefault(column,{}).keys())
-                for day in day_exists:
-                    if min_diff_date <= day <= max_diff_date or day < sixtyDaysAgo:
+            for column, info in table.table_data.setdefault('column_diff_rate', {}).items():
+                day_column_exists = list(info.keys())
+                for day in day_column_exists:
+                    if min_day <= day <= max_day or day < sixtyDaysAgo:
                         del table.table_data['column_diff_rate'][column][day]
 
             # 更新
             table.table_data['total_diff_rate'].update(v['total_diff_rate'])
-            table.table_data['column_diff_rate'].update(v['column_diff_rate'])
+            for column,info in v['column_diff_rate'].items():
+                table.table_data['column_diff_rate'].setdefault(column,{}).update(info)
             table.save()
         return HttpResponse('Ok')
     except Exception as e:
