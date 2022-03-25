@@ -4,8 +4,8 @@ import openpyxl
 import time
 
 
-def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化数据核对\核对清单\aaa_mk日模型核对情况-整体.xlsx', sheet_name='差异清单指标级'):
-# def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化数据核对\核对清单\bbb_mk月模型核对情况-整体.xlsx', sheet_name='mk月模型差异清单指标级'):
+def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化数据核对\核对清单\aaa_mk日模型核对情况-整体.xlsx', sheet_name='差异清单指标级',
+            date_format='day'):
     data_dict = {}
     wb = openpyxl.load_workbook(file_name)
     sheet = wb[sheet_name]
@@ -20,9 +20,11 @@ def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化�
         if not table_name:
             # 为空则跳过
             continue
+        if date_format == 'day':
+            datestr = time.strftime('%Y-%m-%d', time.strptime(str(line[1]), '%Y%m%d'))
+        else:
+            datestr = time.strftime('%Y-%m', time.strptime(str(line[1]), '%Y%m'))
 
-        day = time.strftime('%Y-%m-%d', time.strptime(str(line[1]), '%Y%m%d'))
-        # day = time.strftime('%Y-%m', time.strptime(str(line[1]), '%Y%m'))
         prov_total = float(line[2])
         jt_total = line[3]
         column_name = line[4]
@@ -34,9 +36,9 @@ def getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化�
         total_diff_rate = float(line[10])
         column_diff_rate = float(line[11])
 
-        data_dict.setdefault(table_name, {}).setdefault('total_diff_rate', {}).setdefault(day, total_diff_rate)
+        data_dict.setdefault(table_name, {}).setdefault('total_diff_rate', {}).setdefault(datestr, total_diff_rate)
         data_dict.setdefault(table_name, {}).setdefault('column_diff_rate', {}).setdefault(column_name, {}).setdefault(
-            day, column_diff_rate)
+            datestr, column_diff_rate)
     # excel_data = list(zip(data_dict.keys(), data_dict.values()))
 
     return data_dict
@@ -50,7 +52,7 @@ def get_dep(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化�
     table_dict = {}
     rows_value = list(x for x in list(map(lambda x: list(map(lambda y: y.value, x)), [x for x in data])))
     for line in rows_value:
-        """['mk.tm_ac_owefee_down_d', '20210701', '231104', '0', 'pay_fee', '6010030.00', '0.00', '231104', 
+        """['mk.tm_ac_owefee_down_d', '20210701', '231104', '0', 'pay_fee', '6010030.00', '0.00', '231104',
         '6010030.00', '20210825', '1.000000', '1.000000'] """
         table_name = line[1]
 

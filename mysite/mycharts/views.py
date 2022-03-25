@@ -1,3 +1,4 @@
+import datetime
 import os
 import sys
 import time
@@ -5,7 +6,7 @@ import time
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 # render_to_response（）已弃用，取而代之的是render（）
 from django.http import HttpResponse, HttpResponseRedirect
-from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import TableData, TableDependence
 from polls.models import User
 from django.views.decorators.csrf import csrf_exempt
@@ -18,6 +19,8 @@ from .excel_data_generator import getData, get_dep
 import json
 
 app_dir = os.path.dirname(__file__)
+
+
 # project_dir =os.path.dirname(BaseDir)
 
 
@@ -72,14 +75,13 @@ def logout(request):
     return HttpResponseRedirect(reverse('mycharts:login'))
 
 
-# @is_authenticated
+@is_authenticated
 # @csrf_exempt
 def index(request):
     user = request.session.get('user')
     table_name = TableData.objects.filter(table_id__lte=10, table_id__gte=0).values('table_name')
 
-
-    return render(request, 'mycharts/index.html', {'tables': table_name,'name':user})
+    return render(request, 'mycharts/index.html', {'tables': table_name, 'name': user})
 
 
 @is_authenticated
@@ -90,7 +92,7 @@ def searchtable(request):
     json_data = request.body.decode('utf-8')
     info = json.loads(json_data)
     find_str = info.get('find_str', '')
-    current_page = info.get('pn',1)
+    current_page = info.get('pn', 1)
     # table_names = TableData.objects.filter(table_name__contains=find_str).values('table_name')[:10]
     table_names = TableData.objects.filter(table_name__contains=find_str).order_by('table_id').values('table_name')
     paginator = Paginator(table_names, 10)  # Paginator生成一个对象，然后传入queryset,
@@ -100,10 +102,10 @@ def searchtable(request):
         page_obj = paginator.page(1)
     except PageNotAnInteger as e:  # 传入一个字符串也显示第一页
         page_obj = paginator.page(1)
-    pagerange = paginator.get_elided_page_range(current_page,on_each_side=3,on_ends=2)
-    page_obj.my_page_range =pagerange
+    pagerange = paginator.get_elided_page_range(current_page, on_each_side=3, on_ends=2)
+    page_obj.my_page_range = pagerange
 
-    return render(request, 'mycharts/searchresult.html', {'tables': table_names,'page_obj': page_obj})
+    return render(request, 'mycharts/searchresult.html', {'tables': table_names, 'page_obj': page_obj})
 
 
 @is_authenticated
@@ -114,13 +116,33 @@ def update_index(request):
 @is_authenticated
 def update_table_data(request):
     try:
-        data = getData()
+        mk_day_data = getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化数据核对\核对清单\aaa_mk日模型核对情况-整体.xlsx')
+        dis_day_data = getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化数据核对\核对清单\ccc_dis日表整体核对情况.xlsx')
+        mk_mon_data = getData(file_name=r'D:\bigdata\集中化搬迁\开发区svn文件\集中化数据核对\核对清单\bbb_mk月模型核对情况-整体.xlsx',
+                              sheet_name='mk月模型差异清单指标级', date_format='month')
+        data = {**mk_day_data, **mk_mon_data, **dis_day_data}
+        sixtyDaysAgo = (datetime.datetime.now() - datetime.timedelta(days=60)).strftime('%Y-%m-%d')
         for key, v in data.items():
             table = TableData.objects.get(table_name=key) if TableData.objects.filter(table_name=key) else TableData(
-                table_name=key)
-            # table.table_data = json.dumps(v)
-            # table.clean()
-            table.table_data = v
+                table_name=key,table_data=dict())
+            #删除数据库中需要更新的记录数差异记录
+            min_tot_date,max_tot_date = min(v['total_diff_rate'].keys()),max(v['total_diff_rate'].keys())
+            day_exists = list(table.table_data.setdefault('total_diff_rate',{}).keys())
+            for day in day_exists:
+                if min_tot_date <= day <= max_tot_date or day < sixtyDaysAgo:
+                    del table.table_data['total_diff_rate'][day]
+            # 删除数据库中需要更新的指标差异记录
+            for column,info in v['column_diff_rate'].items():
+                # 1.删掉数据库中每个指标相应周期的数据（data中的指标最小和最大账期之间的数据,以及小于sixtyDaysAgo的账期数据），然后更新。
+                min_diff_date ,max_diff_date = min(info.keys()),max(info.keys())
+                day_exists = list(table.table_data.setdefault('column_diff_rate',{}).setdefault(column,{}).keys())
+                for day in day_exists:
+                    if min_diff_date <= day <= max_diff_date or day < sixtyDaysAgo:
+                        del table.table_data['column_diff_rate'][column][day]
+
+            # 更新
+            table.table_data['total_diff_rate'].update(v['total_diff_rate'])
+            table.table_data['column_diff_rate'].update(v['column_diff_rate'])
             table.save()
         return HttpResponse('Ok')
     except Exception as e:
@@ -144,6 +166,7 @@ def do_once(request):
         return HttpResponse('No')
 
 
+@is_authenticated
 def drawtable(request):
     json_data = request.body.decode('utf-8')
     info = json.loads(json_data)
@@ -151,7 +174,7 @@ def drawtable(request):
 
     # line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
     # 部署到apache服务器后需要使用绝对路径
-    line_path = os.path.join(app_dir,'render/tabledata/charts_%s.html' % table_name.split('.')[1])
+    line_path = os.path.join(app_dir, 'render/tabledata/charts_%s.html' % table_name.split('.')[1])
     if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 86400:
         table = get_object_or_404(TableData, table_name=table_name)
         line_name = table.table_name
@@ -195,6 +218,7 @@ def drawtable(request):
     return HttpResponse(chart)
 
 
+@is_authenticated
 def drawtable_detail(request):
     #  time.sleep(0.1)  # 测试前端用户感知
     json_data = request.body.decode('utf-8')
@@ -204,7 +228,7 @@ def drawtable_detail(request):
      <span style='color:red;font-size:30px'>{line}<br>------<span>"""  # { 图表的名字 line } 或者{ @[index] }
     # line_path = 'mycharts/render/tabledata/charts_%s.html' % table_name.split('.')[1]
     # 部署到apache服务器后需要使用绝对路径
-    line_path = os.path.join(app_dir,'render/tabledata/charts_%s.html' % table_name.split('.')[1])
+    line_path = os.path.join(app_dir, 'render/tabledata/charts_%s.html' % table_name.split('.')[1])
     if not os.path.exists(line_path) or time.time() - os.path.getmtime(line_path) > 60:
         table = get_object_or_404(TableData, table_name=table_name)
         line_name = table.table_name
